@@ -1,0 +1,9 @@
+{
+    "name": "nicolas.kochhann/project_shiba",
+    "autoload": {
+        "psr-4": {
+            "NicolasKochhann\\ProjectShiba\\": "src/"
+        }
+    },
+    "require": {}
+}
