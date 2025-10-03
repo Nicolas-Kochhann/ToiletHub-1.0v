@@ -1,1 +1,6 @@
 # project_shiba
+
+# Entities
+usuários: *username, email, senha, idUsuario(pk)*
+banheiros: *idBanheiro(pk), pago(bool), preço, localização(lat, long), idBathOwner(fk)*
+avaliação: *idAvaliação(pk), comentário, idBanheiro(fk), idUser(fk)*
