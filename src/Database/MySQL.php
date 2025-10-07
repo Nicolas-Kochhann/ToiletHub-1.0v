@@ -2,6 +2,9 @@
 
 namespace Src\Database;
 
+use PDO;
+use PDOException;
+
 class MySQL{
     private static ?PDO $connection = null;
 
