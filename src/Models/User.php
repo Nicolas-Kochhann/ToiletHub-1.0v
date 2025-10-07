@@ -1,5 +1,7 @@
 <?php
 
+namespace Src\Models;
+
 class User{
     private int $userId;
     private string $username;

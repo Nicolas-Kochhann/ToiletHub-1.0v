@@ -1,8 +1,10 @@
 <?php
 
+namespace Src\Models;
+
 class Review{
     private int $reviewId;
     private string $comment;
-    private int $bathroomId;
-    private int $userId;
+    private Bathroom $bathroom;
+    private User $user;
 }

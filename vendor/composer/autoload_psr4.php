@@ -6,5 +6,6 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'NicolasKochhann\\ProjectShiba\\' => array($baseDir . '/src'),
+    'Src\\' => array($baseDir . '/src'),
+    'Config\\' => array($baseDir . '/config'),
 );

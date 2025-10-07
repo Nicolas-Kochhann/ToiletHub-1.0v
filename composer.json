@@ -2,7 +2,8 @@
     "name": "nicolas.kochhann/project_shiba",
     "autoload": {
         "psr-4": {
-            "NicolasKochhann\\ProjectShiba\\": "src/"
+            "Src\\": "src/",
+            "Config\\": "config/"
         }
     },
     "require": {}
