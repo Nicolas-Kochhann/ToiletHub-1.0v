@@ -1,5 +1,7 @@
 <?php
 
+namespace Src\Database;
+
 class MySQL{
     private static ?PDO $connection = null;
 
