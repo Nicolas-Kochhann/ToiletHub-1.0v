@@ -1,4 +1,5 @@
 <?php
+
 namespace Src\Models;
 
 use Src\Database\MySQL;
@@ -12,6 +13,13 @@ class Bathroom implements ActiveRecord{
     private int $lat;
     private int $long;
     private User $owner;
+
+    public function __construct(int $price, int $lat, int $long, User $owner){
+        $this->price = $price;
+        $this->lat = $lat;
+        $this->long = $long;
+        $this->owner = $owner;
+    }
 
     public function save(): bool{
         $conn = MySQL::connect();
