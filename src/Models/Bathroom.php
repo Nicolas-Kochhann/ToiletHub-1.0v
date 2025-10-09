@@ -50,6 +50,10 @@ class Bathroom implements ActiveRecord{
         $stmt->execute(['bathroomId' => $bathroomId]);
         $bathroom = $stmt->fetch();
 
+        if(!$user){
+            throw new BathroomNotFoundException();
+        }
+
         return new Bathroom($bathroom['isPaid'], $bathroom['price'],$bathroom['lat'],$bathroom['long'],$bathroom['ownerId']);
     }
 

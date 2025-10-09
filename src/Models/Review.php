@@ -11,21 +11,18 @@ class Review implements ActiveRecord{
     public function save(): bool{
         $conn = MySQL::connect();
         if($this->userId){
-            $sql = "UPDATE Users SET username=:username, profilePicture=:profilePicture, email=:email WHERE userId=:userId";
+            $sql = "UPDATE reviews SET comment=:comment WHERE reviewId=:reviewId";
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([
-                'username' => $this->username,
-                'profilePicture' => $this->profilePicture,
-                'email' => $this->email,
-                'userId' => $this->userId
+                'comment' => $this->comment
             ]);
         } else {
-            $sql = "INSERT INTO Users(username, email, password) VALUES(:username, :email, :password)";
+            $sql = "INSERT INTO reviews(comment, bathroomId, userId) VALUES(:comment, :bathroomId, :userId)";
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([
-                'username' => $this->username,
-                'email' => $this->email,
-                'password' => password_hash($this->password, PASSWORD_BCRYPT)
+                'comment' => $this->comment,
+                'bathroomId' => $this->bathroom,
+                'userId' => $this->user
             ]);
         }
         return $result;
@@ -33,36 +30,41 @@ class Review implements ActiveRecord{
 
     public function delete(): bool{
         $conn = MySQL::connect();
-        $sql = "DELETE FROM users WHERE userId=:userId";
+        $sql = "DELETE FROM reviews WHERE reviewId=:reviewId";
         $stmt = $conn->prepare($sql);
-        $result = $stmt->execute(['userId' => $this->userId]);
+        $result = $stmt->execute(['reviewId' => $this->reviewId]);
         return $result;
     }
 
-    public static function find($userId): User{
+    public static function find($reviewId): Review{
         $conn = MySQL::connect();
-        $sql = "SELECT username, profilePicture, email FROM users WHERE userId=:userId";
+        $sql = "SELECT b.comment AS comment, b.* AS bathroom, u.* AS user FROM reviews r
+                JOIN users u ON u.userId=r.userId
+                JOIN bathrooms b ON b.bathroomId = r.bathroomId
+                WHERE reviewId=:reviewId";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['userId' => $userId]);
-        $user = $stmt->fetch();
+        $stmt->execute(['reviewId' => $reviewId]);
+        $review = $stmt->fetch();
         
         if(!$user){
-            throw new UserNotFoundException();
+            throw new ReviewNotFoundException();
         }
 
-        return new User($user['username'], $user['profilePicture'], $user['email']);
+        return new Review($review['comment'], $user['bathroom'], $user['user']);
     }
 
     public static function listAll(): array{
         $conn = MySQL::connect();
-        $sql = "SELECT username, profilePicture, email FROM users";
+        $sql = "SELECT b.comment AS comment, b.* AS bathroom, u.* AS user FROM reviews r
+                JOIN users u ON u.userId=r.userId
+                JOIN bathrooms b ON b.bathroomId = r.bathroomId";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $results = $stmt->fetchAll();
-        $users = [];
+        $reviews = [];
         foreach($results as $result){
-            $user = new User($result['username'], $result['profilePicture'], $result['email']);
-            $users[] = $user;
+            $review = new Review($review['comment'], $user['bathroom'], $user['user']);
+            $reviews[] = $review;
         }
         return $users;
     }
