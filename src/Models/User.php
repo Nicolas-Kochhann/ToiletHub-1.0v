@@ -85,7 +85,8 @@ class User implements ActiveRecord{
         $sql = "SELECT password FROM users WHERE email=:email";
         $stmt = $conn->prepare($sql);
         $result = $stmt->execute();
-
+        $passwordHash = $stmt->fetchColumn();
+        return password_verify($password, $passwordHash);
     }
 
     public function setProfilePicture($profilePicture): void{
