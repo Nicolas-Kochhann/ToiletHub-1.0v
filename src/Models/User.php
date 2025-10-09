@@ -13,6 +13,11 @@ class User implements ActiveRecord{
     private string $email;
     private string $password;
 
+    public function __construct($email, $username){
+        $this->username = $username;
+        $this->email = $email;
+    }
+
     public function save(): bool{
         $conn = MySQL::connect();
         if($this->userId){
@@ -49,13 +54,15 @@ class User implements ActiveRecord{
         $sql = "SELECT username, profilePicture, email FROM users WHERE userId=:userId";
         $stmt = $conn->prepare($sql);
         $stmt->execute(['userId' => $userId]);
-        $user = $stmt->fetch();
+        $result = $stmt->fetch();
         
         if(!$user){
             throw new UserNotFoundException();
         }
 
-        return new User($user['username'], $user['profilePicture'], $user['email']);
+        $user = User($user['username'], $user['email']);
+        $user->setProfilePicture($user['profilePicture']);
+        return $user;
     }
 
     public static function listAll(): array{
@@ -66,9 +73,27 @@ class User implements ActiveRecord{
         $results = $stmt->fetchAll();
         $users = [];
         foreach($results as $result){
-            $user = new User($result['username'], $result['profilePicture'], $result['email']);
+            $user = new User($result['username'], $result['email']);
+            $user->setProfilePicture($result['profilePicture']);
             $users[] = $user;
         }
         return $users;
+    }
+
+    public static function authenticate($email, $password): bool{
+        $conn = MySQL::connect();
+        $sql = "SELECT password FROM users WHERE email=:email";
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->execute();
+        $passwordHash = $stmt->fetchColumn();
+        return password_verify($password, $passwordHash);
+    }
+
+    public function setProfilePicture($profilePicture): void{
+        $this->profilePicture = $profilePicture;
+    }
+
+    public function setPassword($password): void{
+        $this->password = $password;
     }
 }
