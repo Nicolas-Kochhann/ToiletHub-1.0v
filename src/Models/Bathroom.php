@@ -1,6 +1,9 @@
 <?php
-
 namespace Src\Models;
+
+use Src\Database\MySQL;
+use Src\Interfaces\ActiveRecord;
+use BathroomNotFoundException;
 
 class Bathroom implements ActiveRecord{
     private int $bathroomId;
@@ -45,23 +48,29 @@ class Bathroom implements ActiveRecord{
 
     public static function find($bathroomId): Bathroom{
         $conn = MySQL::connect();
-        $sql = "SELECT isPaid, price, lat, long, ownerId FROM bathrooms WHERE bathroomId=:bathroomId";
+        $sql = "SELECT b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.long AS long, u.* AS owner FROM bathrooms b
+                JOIN user u ON u.userId=b.ownerId WHERE b.bathroomId=:bathroomId";
         $stmt = $conn->prepare($sql);
         $stmt->execute(['bathroomId' => $bathroomId]);
         $bathroom = $stmt->fetch();
 
-        return new Bathroom($bathroom['isPaid'], $bathroom['price'],$bathroom['lat'],$bathroom['long'],$bathroom['ownerId']);
+        if(!$user){
+            throw new BathroomNotFoundException();
+        }
+
+        return new Bathroom($bathroom['isPaid'], $bathroom['price'],$bathroom['lat'],$bathroom['long'],$bathroom['owner']);
     }
 
     public static function listAll(): array{
         $conn = MySQL::connect();
-        $sql = "SELECT isPaid, price, lat, long, ownerId FROM bathrooms";
+        $sql = "SELECT b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.long AS long, u.* AS owner FROM bathrooms b
+                JOIN user u ON u.userId=b.ownerId";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $results = $stmt->fetchAll();
         $bathroomss = [];
         foreach($results as $result){
-            $bathroom = new Bathroom($result['isPaid'], $result['price'],$result['lat'],$result['long'],$result['ownerId'],);
+            $bathroom = new Bathroom($result['isPaid'], $result['price'],$result['lat'],$result['long'],$result['owner'],);
             $bathrooms[] = $bathroom;
         }
         return $users;
