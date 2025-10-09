@@ -1,4 +1,5 @@
 <?php
+
 namespace Src\Models;
 
 use Src\Database\MySQL;
@@ -8,10 +9,9 @@ use BathroomNotFoundException;
 class Bathroom implements ActiveRecord{
     private int $bathroomId;
     private bool $isPaid;
-    private int $price;
-    private int $lat;
-    private int $long;
-    private User $owner;
+
+    public function __construct(public int $price, public int $lat, public int $long, public User $owner){
+    }
 
     public function save(): bool{
         $conn = MySQL::connect();
