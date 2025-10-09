@@ -22,6 +22,11 @@ class Bathroom implements ActiveRecord{
         $this->owner = $owner;
     }
 
+    public function getBathroomId(): int{
+        return $this->bathroomId;
+    }
+    
+
     public function save(): bool{
         $conn = MySQL::connect();
         if($this->userId){
