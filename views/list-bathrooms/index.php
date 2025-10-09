@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bathroomhub</title>
-    <link rel="stylesheet" href="../../styles/listBathroomStyle.css.css">
+    <link rel="stylesheet" href="../styles/listBathroomStyle.css">
 </head>
 <body>
     <div class="container">
@@ -24,7 +24,7 @@
         </header>
 
         <main>
-            
+
         </main>
 
     </div>
