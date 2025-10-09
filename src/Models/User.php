@@ -18,6 +18,32 @@ class User implements ActiveRecord{
         $this->email = $email;
     }
 
+    public function getUserId(): int{
+        return $this->userId;
+    }
+    public function getUsername(): string{
+        return $this->username;
+    } 
+    public function getProfilePicture(): string{
+        return $this->profilePicture;
+    } 
+    public function getEmail(): string{
+        return $this->email;
+    }
+    public function getPassword(): string{
+        return $this->password;
+    }
+
+    public function setUserId(int $userId): void{
+        $this->userId = $userId;
+    }
+    public function setProfilePicture(string $profilePicture): void{
+        $this->profilePicture = $profilePicture;
+    }
+    public function setPassword(string $password): void{
+        $this->password = $password;
+    }
+
     public function save(): bool{
         $conn = MySQL::connect();
         if($this->userId){
@@ -89,11 +115,7 @@ class User implements ActiveRecord{
         return password_verify($password, $passwordHash);
     }
 
-    public function setProfilePicture($profilePicture): void{
-        $this->profilePicture = $profilePicture;
-    }
-
-    public function setPassword($password): void{
-        $this->password = $password;
+    public static function validateEmail($email): bool{
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 }

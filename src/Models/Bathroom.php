@@ -8,17 +8,48 @@ use BathroomNotFoundException;
 
 class Bathroom implements ActiveRecord{
     private int $bathroomId;
+    private string $description;
     private bool $isPaid;
     private int $price;
     private int $lat;
     private int $long;
     private User $owner;
 
-    public function __construct(int $price, int $lat, int $long, User $owner){
+    public function __construct(string $description,int $price, int $lat, int $long, User $owner){
         $this->price = $price;
         $this->lat = $lat;
         $this->long = $long;
         $this->owner = $owner;
+        $this->description = $description;
+    }
+
+    public function getBathroomId(): int{
+        return $this->bathroomId;
+    }
+    public function getDescription(): string{
+        return $this->description;
+    }
+    public function getIsPaid(): bool{
+        return $this->isPaid;
+    }   
+    public function getPrice(): int{
+        return $this->price;
+    }   
+    public function getLat(): int{
+        return $this->lat;
+    }
+    public function getLong(): int{
+        return $this->long;
+    }
+    public function getOwner(): User{
+        return $this->owner;
+    }
+
+    public function setBathroomId(int $bathroomId): void{
+        $this->bathroomId = $bathroomId;
+    }
+    public function setIsPaid(bool $isPaid): void{
+        $this->isPaid = $isPaid;
     }
 
     public function save(): bool{
