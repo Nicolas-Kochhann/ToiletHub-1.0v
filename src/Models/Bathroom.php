@@ -8,6 +8,7 @@ use BathroomNotFoundException;
 
 class Bathroom implements ActiveRecord{
     private int $bathroomId;
+    private string $description;
     private bool $isPaid;
     private int $price;
     private int $lat;

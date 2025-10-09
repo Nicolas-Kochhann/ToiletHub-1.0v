@@ -7,12 +7,13 @@ CREATE TABLE users (
     userId INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
+    password TEXT NOT NULL
 );
 
 -- Bathrooms table
 CREATE TABLE bathrooms (
     bathroomId INT AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(100),
     isPaid BOOLEAN NOT NULL DEFAULT FALSE,
     price DECIMAL(10,2),
     latitude DECIMAL(9,6) NOT NULL,
