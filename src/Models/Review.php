@@ -8,9 +8,9 @@ use ReviewNotFoundException;
 
 class Review implements ActiveRecord{
     private int $reviewId;
-    private string $comment;
-    private Bathroom $bathroom;
-    private User $user;
+
+    public function __construct(private string $comment, private Bathroom $bathroom, private User $user){
+    }
 
     public function save(): bool{
         $conn = MySQL::connect();
