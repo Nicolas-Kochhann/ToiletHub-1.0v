@@ -15,8 +15,8 @@
 
         <header>
             <img src="" alt="logo">
-            <a href="">
-                Criar Banheiro
+            <a class="link-criarbanheiro" href="">
+                + Cadastrar Banheiro
             </a>
             <div>
                 Perfil
