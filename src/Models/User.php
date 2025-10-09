@@ -4,6 +4,7 @@ namespace Src\Models;
 
 use Src\Database\MySQL;
 use Src\Interfaces\ActiveRecord;
+use UserNotFoundException;
 
 class User implements ActiveRecord{
     private int $userId;
@@ -49,7 +50,12 @@ class User implements ActiveRecord{
         $stmt = $conn->prepare($sql);
         $stmt->execute(['userId' => $userId]);
         $user = $stmt->fetch();
-        return $user;
+        
+        if(!$user){
+            throw new UserNotFoundException();
+        }
+
+        return new User($user['username'], $user['profilePicture'], $user['email']);
     }
 
     public static function listAll(): array{
@@ -57,7 +63,12 @@ class User implements ActiveRecord{
         $sql = "SELECT username, profilePicture, email FROM users";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        $users = $stmt->fetchAll();
+        $results = $stmt->fetchAll();
+        $users = [];
+        foreach($results as $result){
+            $user = new User($result['username'], $result['profilePicture'], $result['email']);
+            $users[] = $user;
+        }
         return $users;
     }
 }
