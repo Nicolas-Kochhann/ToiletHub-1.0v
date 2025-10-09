@@ -18,6 +18,23 @@ class Review implements ActiveRecord{
         $this->user = $user;
     }
 
+    public function getReviewId(): int{
+        return $this->reviewId;
+    } 
+    public function getComment(): string{
+        return $this->comment;
+    }
+    public function getBathroom(): Bathroom{
+        return $this->bathroom;
+    }
+    public function getUser(): User{
+        return $this->user;
+    }
+    
+    public function setReviewId(int $reviewId): void{
+        $this->reviewId = $reviewId;
+    }
+
     public function save(): bool{
         $conn = MySQL::connect();
         if($this->userId){
