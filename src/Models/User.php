@@ -114,4 +114,8 @@ class User implements ActiveRecord{
         $passwordHash = $stmt->fetchColumn();
         return password_verify($password, $passwordHash);
     }
+
+    public static function validateEmail($email): bool{
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+    }
 }
