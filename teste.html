@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocalização</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .sucesso {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .erro {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .coordenadas {
+            font-family: monospace;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌍 Obter Localização</h1>
+    
+    <div class="container">
+        <button onclick="obterLocalizacao()">📍 Obter Localização Atual</button>
+        <button onclick="monitorarLocalizacao()">🔄 Monitorar Localização</button>
+        <button onclick="pararMonitoramento()" disabled id="btnParar">⏹️ Parar Monitoramento</button>
+    </div>
+
+    <div id="status" class="container info">
+        <strong>Status:</strong> <span id="statusTexto">Pronto para obter localização</span>
+    </div>
+
+    <div id="resultado"></div>
+
+    <script>
+        let watchId = null;
+
+        // Função principal para obter localização
+        function obterLocalizacao() {
+            atualizarStatus('Solicitando permissão de localização...', 'info');
+            
+            if (!navigator.geolocation) {
+                mostrarResultado('Geolocalização não é suportada pelo seu navegador.', 'erro');
+                return;
+            }
+
+            const opcoes = {
+                enableHighAccuracy: true,    // Alta precisão
+                timeout: 10000,             // 10 segundos de timeout
+                maximumAge: 0               // Não usar cache
+            };
+
+            navigator.geolocation.getCurrentPosition(
+                // Sucesso
+                function(posicao) {
+                    const lat = posicao.coords.latitude;
+                    const lng = posicao.coords.longitude;
+                    const precisao = posicao.coords.accuracy;
+                    
+                    exibirLocalizacao(lat, lng, precisao);
+                    enviarParaServidor(lat, lng);
+                    atualizarStatus('Localização obtida com sucesso!', 'sucesso');
+                },
+                // Erro
+                function(erro) {
+                    tratarErroGeolocalizacao(erro);
+                },
+                // Opções
+                opcoes
+            );
+        }
+
+        // Função para monitorar localização em tempo real
+        function monitorarLocalizacao() {
+            atualizarStatus('Iniciando monitoramento de localização...', 'info');
+            
+            if (!navigator.geolocation) {
+                mostrarResultado('Geolocalização não é suportada.', 'erro');
+                return;
+            }
+
+            const opcoes = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
+
+            watchId = navigator.geolocation.watchPosition(
+                function(posicao) {
+                    const lat = posicao.coords.latitude;
+                    const lng = posicao.coords.longitude;
+                    const precisao = posicao.coords.accuracy;
+                    
+                    exibirLocalizacao(lat, lng, precisao, true);
+                    enviarParaServidor(lat, lng);
+                    atualizarStatus('Monitorando localização...', 'info');
+                },
+                tratarErroGeolocalizacao,
+                opcoes
+            );
+
+            document.getElementById('btnParar').disabled = false;
+        }
+
+        // Função para parar monitoramento
+        function pararMonitoramento() {
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+                document.getElementById('btnParar').disabled = true;
+                atualizarStatus('Monitoramento parado.', 'info');
+            }
+        }
+
+        // Exibir localização na tela
+        function exibirLocalizacao(lat, lng, precisao, emTempoReal = false) {
+            const timestamp = new Date().toLocaleString();
+            const html = `
+                <div class="sucesso">
+                    <h3>${emTempoReal ? '📍 Localização em Tempo Real' : '📍 Localização Obtida'}</h3>
+                    <div class="coordenadas">
+                        <strong>Latitude:</strong> ${lat.toFixed(6)}<br>
+                        <strong>Longitude:</strong> ${lng.toFixed(6)}<br>
+                        <strong>Precisão:</strong> ±${precisao.toFixed(2)} metros<br>
+                        <strong>Horário:</strong> ${timestamp}
+                    </div>
+                    ${!emTempoReal ? `<button onclick="abrirNoGoogleMaps(${lat}, ${lng})">🗺️ Abrir no Google Maps</button>` : ''}
+                </div>
+            `;
+            
+            if (emTempoReal) {
+                document.getElementById('resultado').innerHTML = html;
+            } else {
+                mostrarResultado(html, 'sucesso');
+            }
+        }
+
+        // Abrir localização no Google Maps
+        function abrirNoGoogleMaps(lat, lng) {
+            const url = `https://www.google.com/maps?q=${lat},${lng}`;
+            window.open(url, '_blank');
+        }
+
+        // Enviar localização para o servidor
+        function enviarParaServidor(lat, lng) {
+            fetch('https://geolocalizacao.local/salvar-localizacao.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    latitude: lat,
+                    longitude: lng,
+                    timestamp: new Date().toISOString(),
+                    userAgent: navigator.userAgent
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Localização salva:', data);
+            })
+            .catch(error => {
+                console.error('Erro ao salvar:', error);
+            });
+        }
+
+        // Tratar erros de geolocalização
+        function tratarErroGeolocalizacao(erro) {
+            let mensagem = '';
+            
+            switch(erro.code) {
+                case erro.PERMISSION_DENIED:
+                    mensagem = 'Permissão de localização negada. Por favor, permita o acesso à localização nas configurações do seu navegador.';
+                    break;
+                case erro.POSITION_UNAVAILABLE:
+                    mensagem = 'Informação de localização indisponível. Verifique se o GPS está ativado.';
+                    break;
+                case erro.TIMEOUT:
+                    mensagem = 'Tempo esgotado para obter a localização. Tente novamente.';
+                    break;
+                default:
+                    mensagem = 'Erro desconhecido ao obter localização.';
+                    break;
+            }
+            
+            mostrarResultado(mensagem, 'erro');
+            atualizarStatus('Erro ao obter localização', 'erro');
+        }
+
+        // Funções auxiliares
+        function mostrarResultado(mensagem, tipo) {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = `<div class="${tipo}">${mensagem}</div>`;
+            resultado.style.display = 'block';
+        }
+
+        function atualizarStatus(texto, tipo) {
+            const status = document.getElementById('status');
+            const statusTexto = document.getElementById('statusTexto');
+            
+            statusTexto.textContent = texto;
+            status.className = `container ${tipo}`;
+        }
+
+        // Inicialização
+        window.onload = function() {
+            atualizarStatus('Pronto para obter localização', 'info');
+        };
+    </script>
+</body>
+</html>
