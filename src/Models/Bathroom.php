@@ -13,14 +13,92 @@ class Bathroom implements ActiveRecord{
     private int $price;
     private int $lat;
     private int $long;
+    private array $images;
     private User $owner;
+    
 
-    public function __construct(string $description,int $price, int $lat, int $long, User $owner){
+    public function __construct(string $description,int $price, int $lat, int $long, array $images, User $owner){
         $this->price = $price;
         $this->lat = $lat;
         $this->long = $long;
         $this->owner = $owner;
         $this->description = $description;
+        $this->images = $images;
+    }
+
+    public function save(): bool{
+        $conn = MySQL::connect();
+        if($this->bathroomId){
+            $sql = "UPDATE bathrooms SET description=:description isPaid=:isPaid, price=:price, lat=:lat, long=:long, ownerId=:ownerId WHERE bathroomId=:bathroomId";
+            $stmt = $conn->prepare($sql);
+            $result = $stmt->execute([
+                'description' => $this->description,
+                'isPaid' => $this->isPaid,
+                'price' => $this->price,
+                'lat' => $this->lat,
+                'long' => $this->long,
+                'ownerId' => $this->owner
+            ]);
+        } else {
+            $sql = "INSERT INTO bathrooms(description, isPaid, price, lat, long, ownerId) VALUES(:description, :isPaid, :price, :lat, :long, :ownerId)";
+            $stmt = $conn->prepare($sql);
+            $result = $stmt->execute([
+                'description' => $this->description,
+                'isPaid' => $this->isPaid,
+                'price' => $this->price,
+                'lat' => $this->lat,
+                'long' => $this->long
+            ]);
+        }
+        return $result;
+    }
+
+    public function delete(): bool{
+        $conn = MySQL::connect();
+        $sql = "DELETE FROM bathrooms WHERE bathroomId=:bathroomId";
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->execute(['bathroomId' => $this->bathroomId]);
+        return $result;
+    }
+
+    public static function find($bathroomId): Bathroom{
+        $conn = MySQL::connect();
+        $sql = "SELECT b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.long AS long, 
+                u.username AS owner_username, u.email AS owner_email, u.profilePicture as owner_picture 
+                FROM bathrooms b
+                JOIN user u ON u.userId=b.ownerId WHERE b.bathroomId=:bathroomId";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['bathroomId' => $bathroomId]);
+        $bathroom = $stmt->fetch();
+
+        if(!$bathroom){
+            throw new BathroomNotFoundException();
+        }
+
+        $owner = new User($bathroom['owner_email'], $bathroom['owner_username']);
+        $owner->setProfilePicture($bathroom['owner_picture']);
+
+        return new Bathroom($bathroom['isPaid'], $bathroom['price'],$bathroom['lat'],$bathroom['long'], $owner);
+    }
+
+    public static function listAll(): array{
+        $conn = MySQL::connect();
+        $sql = "SELECT b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.long AS long, 
+                u.username AS owner_username, u.email AS owner_email, u.profilePicture as owner_picture 
+                FROM bathrooms b
+                JOIN user u ON u.userId=b.ownerId";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+        $bathrooms = [];
+        foreach($results as $result){
+            $owner = new User($result['owner_email'], $result['owner_username']);
+            $owner->setProfilePicture($result['owner_picture']);
+
+            $bathroom = new Bathroom($result['isPaid'], $result['price'],$result['lat'],$result['long'],$owner);
+            $bathrooms[] = $bathroom;
+        }
+        return $bathrooms;
     }
 
     public function getBathroomId(): int{
@@ -47,71 +125,5 @@ class Bathroom implements ActiveRecord{
 
     public function setBathroomId(int $bathroomId): void{
         $this->bathroomId = $bathroomId;
-    }
-    public function setIsPaid(bool $isPaid): void{
-        $this->isPaid = $isPaid;
-    }
-
-    public function save(): bool{
-        $conn = MySQL::connect();
-        if($this->userId){
-            $sql = "UPDATE bathrooms SET isPaid=:isPaid, price=:price, lat=:lat, long=:long, ownerId=:ownerId WHERE bathroomId=:bathroomId";
-            $stmt = $conn->prepare($sql);
-            $result = $stmt->execute([
-                'isPaid' => $this->isPaid,
-                'price' => $this->price,
-                'lat' => $this->lat,
-                'long' => $this->long,
-                'ownerId' => $this->owner
-            ]);
-        } else {
-            $sql = "INSERT INTO bathrooms(isPaid, price, lat, long, ownerId) VALUES(:isPaid, :price, :lat, :long, :ownerId)";
-            $stmt = $conn->prepare($sql);
-            $result = $stmt->execute([
-                'isPaid' => $this->isPaid,
-                'price' => $this->price,
-                'lat' => $this->lat,
-                'long' => $this->long
-            ]);
-        }
-        return $result;
-    }
-
-    public function delete(): bool{
-        $conn = MySQL::connect();
-        $sql = "DELETE FROM bathrooms WHERE bathroomId=:bathroomId";
-        $stmt = $conn->prepare($sql);
-        $result = $stmt->execute(['bathroomId' => $this->bathroomId]);
-        return $result;
-    }
-
-    public static function find($bathroomId): Bathroom{
-        $conn = MySQL::connect();
-        $sql = "SELECT b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.long AS long, u.* AS owner FROM bathrooms b
-                JOIN user u ON u.userId=b.ownerId WHERE b.bathroomId=:bathroomId";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(['bathroomId' => $bathroomId]);
-        $bathroom = $stmt->fetch();
-
-        if(!$user){
-            throw new BathroomNotFoundException();
-        }
-
-        return new Bathroom($bathroom['isPaid'], $bathroom['price'],$bathroom['lat'],$bathroom['long'],$bathroom['owner']);
-    }
-
-    public static function listAll(): array{
-        $conn = MySQL::connect();
-        $sql = "SELECT b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.long AS long, u.* AS owner FROM bathrooms b
-                JOIN user u ON u.userId=b.ownerId";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $results = $stmt->fetchAll();
-        $bathroomss = [];
-        foreach($results as $result){
-            $bathroom = new Bathroom($result['isPaid'], $result['price'],$result['lat'],$result['long'],$result['owner'],);
-            $bathrooms[] = $bathroom;
-        }
-        return $users;
     }
 }

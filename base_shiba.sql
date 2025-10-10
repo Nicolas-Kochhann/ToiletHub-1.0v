@@ -16,8 +16,8 @@ CREATE TABLE bathrooms (
     description VARCHAR(100),
     isPaid BOOLEAN NOT NULL DEFAULT FALSE,
     price DECIMAL(10,2),
-    latitude DECIMAL(9,6) NOT NULL,
-    longitude DECIMAL(9,6) NOT NULL,
+    lat DECIMAL(9,6) NOT NULL,
+    long DECIMAL(9,6) NOT NULL,
     ownerId INT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(userId)
 );
@@ -31,3 +31,9 @@ CREATE TABLE reviews (
     FOREIGN KEY (bathroomId) REFERENCES bathrooms(bathroomId),
     FOREIGN KEY (userId) REFERENCES users(userId)
 );
+
+-- Bathroomm images table
+CREATE TABLE bathrooms_images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    image TEXT
+)

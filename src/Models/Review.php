@@ -37,7 +37,7 @@ class Review implements ActiveRecord{
 
     public function save(): bool{
         $conn = MySQL::connect();
-        if($this->userId){
+        if($this->reviewId){
             $sql = "UPDATE reviews SET comment=:comment WHERE reviewId=:reviewId";
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([
@@ -49,7 +49,7 @@ class Review implements ActiveRecord{
             $result = $stmt->execute([
                 'comment' => $this->comment,
                 'bathroomId' => $this->bathroom,
-                'userId' => $this->user
+                'userId' => $this->user->getUserId()
             ]);
         }
         return $result;
@@ -65,7 +65,10 @@ class Review implements ActiveRecord{
 
     public static function find($reviewId): Review{
         $conn = MySQL::connect();
-        $sql = "SELECT b.comment AS comment, b.* AS bathroom, u.* AS user FROM reviews r
+        $sql = "SELECT b.comment AS comment, 
+                b. AS bathroom, 
+                u.email AS user_email, u.username AS username, u.profilePicture AS user_picture 
+                FROM reviews r
                 JOIN users u ON u.userId=r.userId
                 JOIN bathrooms b ON b.bathroomId = r.bathroomId
                 WHERE reviewId=:reviewId";
@@ -73,11 +76,14 @@ class Review implements ActiveRecord{
         $stmt->execute(['reviewId' => $reviewId]);
         $review = $stmt->fetch();
         
-        if(!$user){
+        if(!$reviewId){
             throw new ReviewNotFoundException();
         }
 
-        return new Review($review['comment'], $user['bathroom'], $user['user']);
+        $user = new User($bathroom['owner_email'], $bathroom['owner_username']);
+        $user->setProfilePicture($bathroom['owner_picture']);
+
+        return new Review($review['comment'], $review['bathroom'], );
     }
 
     public static function listAll(): array{
@@ -93,6 +99,6 @@ class Review implements ActiveRecord{
             $review = new Review($review['comment'], $user['bathroom'], $user['user']);
             $reviews[] = $review;
         }
-        return $users;
+        return $reviews;
     }
 }
