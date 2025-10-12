@@ -35,5 +35,6 @@ CREATE TABLE reviews (
 -- Bathroomm images table
 CREATE TABLE bathrooms_images (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    image TEXT
+    image TEXT NOT NULL,
+    bathroomId INT NOT NULL
 )

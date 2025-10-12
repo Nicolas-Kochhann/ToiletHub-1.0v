@@ -17,19 +17,49 @@ class Bathroom implements ActiveRecord{
     private User $owner;
     
 
-    public function __construct(string $description,int $price, int $lat, int $long, array $images, User $owner){
+    public function __construct(string $description, bool $isPaid, int $price, int $lat, int $long, array $images = [], User $owner){
         $this->price = $price;
         $this->lat = $lat;
         $this->long = $long;
         $this->owner = $owner;
         $this->description = $description;
+        $this->isPaid = $isPaid;
         $this->images = $images;
+    }
+
+    public static function saveImage(int $bathroomId, array $images): void{
+        $conn = MySQL::connect();
+        $sql = 'INSERT INTO bathrooms_images (image, bathroomId) VALUES (:image, :bathroomId)';
+        $stmt = $conn->prepare($sql);
+        foreach($images as $image){
+            $stmt->execute([
+                'image' => $image,
+                'bathroomId' => $bathroomId
+            ]);
+        }
+    }
+
+    public static function findBathroomImages($bathroomId): array{
+        $conn = MySQL::connect();
+        $sql = 'SELECT image FROM bathrooms_images WHERE bathroomId=:bathroomId';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+            'bathroomId' => $bathroomId
+        ]);
+        $results = $stmt->fetchAll();
+        $images = [];
+
+        foreach ($results as $result) {
+            $images[] = $result['image'];
+        }
+
+        return $images;
     }
 
     public function save(): bool{
         $conn = MySQL::connect();
         if($this->bathroomId){
-            $sql = "UPDATE bathrooms SET description=:description isPaid=:isPaid, price=:price, lat=:lat, long=:long, ownerId=:ownerId WHERE bathroomId=:bathroomId";
+            $sql = "UPDATE bathrooms SET description=:description isPaid=:isPaid, price=:price, lat=:lat, long=:long WHERE bathroomId=:bathroomId";
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([
                 'description' => $this->description,
@@ -37,7 +67,6 @@ class Bathroom implements ActiveRecord{
                 'price' => $this->price,
                 'lat' => $this->lat,
                 'long' => $this->long,
-                'ownerId' => $this->owner
             ]);
         } else {
             $sql = "INSERT INTO bathrooms(description, isPaid, price, lat, long, ownerId) VALUES(:description, :isPaid, :price, :lat, :long, :ownerId)";
@@ -47,7 +76,8 @@ class Bathroom implements ActiveRecord{
                 'isPaid' => $this->isPaid,
                 'price' => $this->price,
                 'lat' => $this->lat,
-                'long' => $this->long
+                'long' => $this->long,
+                'ownerId' => $this->owner->getUserId()
             ]);
         }
         return $result;
@@ -78,7 +108,9 @@ class Bathroom implements ActiveRecord{
         $owner = new User($bathroom['owner_email'], $bathroom['owner_username']);
         $owner->setProfilePicture($bathroom['owner_picture']);
 
-        return new Bathroom($bathroom['isPaid'], $bathroom['price'],$bathroom['lat'],$bathroom['long'], $owner);
+        $images = Bathroom::findBathroomImages($bathroomId);
+
+        return new Bathroom($bathroom['isPaid'], $bathroom['price'],$bathroom['lat'],$bathroom['long'], $images, $owner);
     }
 
     public static function listAll(): array{

@@ -9,31 +9,15 @@ use ReviewNotFoundException;
 class Review implements ActiveRecord{
     private int $reviewId;
     private string $comment;
-    private Bathroom $bathroom;
+    private int $bathroomId;
     private User $user;
 
-    public function __construct(string $comment, Bathroom $bathroom, User $user){
+    public function __construct(string $comment, int $bathroomId, User $user){
         $this->comment = $comment;
-        $this->bathroom = $bathroom;
+        $this->bathroomId = $bathroomId;
         $this->user = $user;
     }
 
-    public function getReviewId(): int{
-        return $this->reviewId;
-    } 
-    public function getComment(): string{
-        return $this->comment;
-    }
-    public function getBathroom(): Bathroom{
-        return $this->bathroom;
-    }
-    public function getUser(): User{
-        return $this->user;
-    }
-    
-    public function setReviewId(int $reviewId): void{
-        $this->reviewId = $reviewId;
-    }
 
     public function save(): bool{
         $conn = MySQL::connect();
@@ -48,7 +32,7 @@ class Review implements ActiveRecord{
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([
                 'comment' => $this->comment,
-                'bathroomId' => $this->bathroom,
+                'bathroomId' => $this->bathroomId,
                 'userId' => $this->user->getUserId()
             ]);
         }
@@ -65,8 +49,8 @@ class Review implements ActiveRecord{
 
     public static function find($reviewId): Review{
         $conn = MySQL::connect();
-        $sql = "SELECT b.comment AS comment, 
-                b. AS bathroom, 
+        $sql = "SELECT r.comment AS comment, 
+                b.bathroomId AS bathroomId, 
                 u.email AS user_email, u.username AS username, u.profilePicture AS user_picture 
                 FROM reviews r
                 JOIN users u ON u.userId=r.userId
@@ -80,15 +64,18 @@ class Review implements ActiveRecord{
             throw new ReviewNotFoundException();
         }
 
-        $user = new User($bathroom['owner_email'], $bathroom['owner_username']);
-        $user->setProfilePicture($bathroom['owner_picture']);
+        $user = new User($review['email'], $review['username']);
+        $user->setProfilePicture($review['user_picture']);
 
-        return new Review($review['comment'], $review['bathroom'], );
+        return new Review($review['comment'], $review['bathroomId'], $user);
     }
 
     public static function listAll(): array{
         $conn = MySQL::connect();
-        $sql = "SELECT b.comment AS comment, b.* AS bathroom, u.* AS user FROM reviews r
+        $sql = "SELECT r.reviewId AS reviewId, b.comment AS comment, 
+                b.bathroomId AS bathroomId, 
+                u.email AS user_email, u.username AS username, u.profilePicture AS user_picture 
+                FROM reviews r
                 JOIN users u ON u.userId=r.userId
                 JOIN bathrooms b ON b.bathroomId = r.bathroomId";
         $stmt = $conn->prepare($sql);
@@ -96,9 +83,30 @@ class Review implements ActiveRecord{
         $results = $stmt->fetchAll();
         $reviews = [];
         foreach($results as $result){
-            $review = new Review($review['comment'], $user['bathroom'], $user['user']);
+            $user = new User($result['email'], $result['username']);
+            $user->setProfilePicture($result['user_picture']);
+
+            $review = new Review($result['comment'], $result['bathroomId'], $result['user']);
+            $review->reviewId = $result['reviewId'];
             $reviews[] = $review;
         }
         return $reviews;
+    }
+
+    public function getReviewId(): int{
+        return $this->reviewId;
+    } 
+    public function getComment(): string{
+        return $this->comment;
+    }
+    public function getBathroomId(): int{
+        return $this->bathroomId;
+    }
+    public function getUser(): User{
+        return $this->user;
+    }
+    
+    public function setReviewId(int $reviewId): void{
+        $this->reviewId = $reviewId;
     }
 }
