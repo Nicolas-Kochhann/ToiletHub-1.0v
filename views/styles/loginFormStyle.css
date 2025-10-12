@@ -46,7 +46,6 @@ form.big-form label {
   font-family: "Roboto", sans-serif;
   font-size: 1.05rem;
   color: #272727;
-  margin: 0 0 20px 0;
 }
 
 form.big-form input {
@@ -56,10 +55,37 @@ form.big-form input {
   font-size: 1.04rem;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 5px;
+  margin: 0 0 20px 0;
 }
 
 form.big-form input:focus {
   outline: 1px solid #60b3e7;
+}
+
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-container input[type="password"] {
+  flex: 1;
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+
+img.show-password {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+img.show-password:hover {
+  cursor: pointer;
+}
+
+img.showing {
+  filter: drop-shadow(0 0 3px #009dff);
 }
 
 form.big-form button.submit {
