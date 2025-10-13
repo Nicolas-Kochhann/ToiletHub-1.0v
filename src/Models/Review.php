@@ -4,7 +4,7 @@ namespace Src\Models;
 
 use Src\Database\MySQL;
 use Src\Interfaces\ActiveRecord;
-use ReviewNotFoundException;
+use Src\Exceptions\Domain\ReviewNotFoundException;
 
 class Review implements ActiveRecord{
     private int $reviewId;

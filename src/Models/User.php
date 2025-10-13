@@ -2,10 +2,10 @@
 
 namespace Src\Models;
 
-use EmailAlreadyExistsException;
 use Src\Database\MySQL;
 use Src\Interfaces\ActiveRecord;
-use UserNotFoundException;
+use Src\Exceptions\Domain\UserNotFoundException;
+use Src\Exceptions\Domain\EmailAlreadyExistsException;
 
 class User implements ActiveRecord{
     private int $userId;
@@ -35,7 +35,7 @@ class User implements ActiveRecord{
     }
 
     public static function validatePassword($password): bool{
-        $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
+        $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/';
         $result = preg_match($regex, $password);
         return $result === 1;
     }

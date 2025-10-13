@@ -4,7 +4,7 @@ namespace Src\Models;
 
 use Src\Database\MySQL;
 use Src\Interfaces\ActiveRecord;
-use BathroomNotFoundException;
+use Src\Exceptions\Domain\BathroomNotFoundException;
 
 class Bathroom implements ActiveRecord{
     private int $bathroomId;
@@ -17,14 +17,13 @@ class Bathroom implements ActiveRecord{
     private User $owner;
     
 
-    public function __construct(string $description, bool $isPaid, int $price, int $lat, int $long, array $images = [], User $owner){
+    public function __construct(string $description, bool $isPaid, int $price, int $lat, int $long, User $owner){
         $this->price = $price;
         $this->lat = $lat;
         $this->long = $long;
         $this->owner = $owner;
         $this->description = $description;
         $this->isPaid = $isPaid;
-        $this->images = $images;
     }
 
     public static function saveImage(int $bathroomId, array $images): void{
@@ -39,7 +38,7 @@ class Bathroom implements ActiveRecord{
         }
     }
 
-    public static function findBathroomImages($bathroomId): array{
+    public static function findBathroomImages(int $bathroomId): array{
         $conn = MySQL::connect();
         $sql = 'SELECT image FROM bathrooms_images WHERE bathroomId=:bathroomId';
         $stmt = $conn->prepare($sql);
@@ -49,11 +48,25 @@ class Bathroom implements ActiveRecord{
         $results = $stmt->fetchAll();
         $images = [];
 
+        if(!$results){
+            
+        }
+
         foreach ($results as $result) {
             $images[] = $result['image'];
         }
 
         return $images;
+    }
+
+    public static function deleteImage(int $bathroomId, string $image): void{
+        $conn = MySQL::connect();
+        $sql = 'DELETE * FROM bathrooms_images WHERE image=:image AND bathroomId=:bathroomId';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+            'image' => $image,
+            'bathroomId' => $bathroomId
+        ]);
     }
 
     public function save(): bool{
@@ -99,23 +112,24 @@ class Bathroom implements ActiveRecord{
                 JOIN user u ON u.userId=b.ownerId WHERE b.bathroomId=:bathroomId";
         $stmt = $conn->prepare($sql);
         $stmt->execute(['bathroomId' => $bathroomId]);
-        $bathroom = $stmt->fetch();
+        $result = $stmt->fetch();
 
-        if(!$bathroom){
+        if(!$result){
             throw new BathroomNotFoundException();
         }
 
-        $owner = new User($bathroom['owner_email'], $bathroom['owner_username']);
-        $owner->setProfilePicture($bathroom['owner_picture']);
+        $owner = new User($result['owner_email'], $result['owner_username']);
+        $owner->setProfilePicture($result['owner_picture']);
 
-        $images = Bathroom::findBathroomImages($bathroomId);
-
-        return new Bathroom($bathroom['isPaid'], $bathroom['price'],$bathroom['lat'],$bathroom['long'], $images, $owner);
+        $bathroom = new Bathroom($result['description'], $result['isPaid'],$result['price'],$result['lat'],$result['long'],$owner);
+        $bathroom->bathroomId = $result['bathroomId'];
+        $bathroom->images = Bathroom::findBathroomImages($bathroom->bathroomId);
+        return $bathroom;
     }
 
     public static function listAll(): array{
         $conn = MySQL::connect();
-        $sql = "SELECT b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.long AS long, 
+        $sql = "SELECT b.bathroomId AS bathroomId, b.description AS description, b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.long AS long, 
                 u.username AS owner_username, u.email AS owner_email, u.profilePicture as owner_picture 
                 FROM bathrooms b
                 JOIN user u ON u.userId=b.ownerId";
@@ -127,7 +141,9 @@ class Bathroom implements ActiveRecord{
             $owner = new User($result['owner_email'], $result['owner_username']);
             $owner->setProfilePicture($result['owner_picture']);
 
-            $bathroom = new Bathroom($result['isPaid'], $result['price'],$result['lat'],$result['long'],$owner);
+            $bathroom = new Bathroom($result['description'], $result['isPaid'],$result['price'],$result['lat'],$result['long'],$owner);
+            $bathroom->bathroomId = $result['bathroomId'];
+            $bathroom->images = Bathroom::findBathroomImages($bathroom->bathroomId);
             $bathrooms[] = $bathroom;
         }
         return $bathrooms;
