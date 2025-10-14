@@ -32,7 +32,7 @@ class User implements ActiveRecord{
             session_start();
             $_SESSION['userId'] = $session_user->userId;
             $_SESSION['username'] = $session_user->username;
-            $_SESSION['profile_picture'] = $session_user->profilePicture;
+            $_SESSION['profilePicture'] = $session_user->profilePicture;
             return true;
         }
         return false;
