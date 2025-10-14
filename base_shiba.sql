@@ -7,7 +7,7 @@ CREATE TABLE users (
     userId INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    username TEXT NOT NULL,
+    profilePicture TEXT DEFAULT NULL,
     password TEXT NOT NULL
 );
 
