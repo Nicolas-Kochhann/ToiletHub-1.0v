@@ -50,7 +50,7 @@ class User implements ActiveRecord{
 
     public static function verifyIfEmailAlreadyExists($email): bool{
         $conn = MySQL::connect();
-        $sql = 'SELECT COUNT(userId) FROM users WHERE email=:email';
+        $sql = 'SELECT COUNT(userId) FROM users GROUP BY userId HAVING email=:email';
         $stmt = $conn->prepare($sql);
         $result = $stmt->execute([
             'email' => $email 
