@@ -1,5 +1,18 @@
 <?php
+require_once "../../../vendor/autoload.php";
+use Src\Models\User;
 
+if(isset($_POST['button'])){
+    $u = new User($_POST['email'], $_POST['username']);
+    $u->setPassword($_POST['password']);
+
+    if($u->validateEmail($_POST['email'])){
+        $u->save();
+        header("location: ../login/index.php");
+    }else{
+        header("location: index.php");
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -14,7 +27,7 @@
 <body>
     <div class="container">
         <main class="form-container">
-            <form class="big-form" action="signup.php" method="POST">
+            <form class="big-form" action="index.php" method="POST">
                 <h1 class="form-title">Register</h1>
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username" required>
@@ -25,7 +38,7 @@
                     <input type="password" name="password" id="password" required>
                     <img class="show-password" id="show-password" src="../../resources/images/eye.svg" alt="show passwd">
                 </div>
-                <button class="submit">Register</button>
+                <button class="submit" name="button">Register</button>
                 <p>Already have an account? <strong><a href="../login/">Log in</a></strong></p>
             </form>
         </main>
