@@ -10,7 +10,7 @@ use Src\Exceptions\Domain\EmailAlreadyExistsException;
 class User implements ActiveRecord{
     private int $userId;
     private string $username;
-    private string $profilePicture;
+    private ?string $profilePicture;
     private string $email;
     private string $password;
 
@@ -103,6 +103,7 @@ class User implements ActiveRecord{
         if(!$result){
             throw new UserNotFoundException();
         }
+
 
         $user = new User($result['username'], $result['email']);
         $user->profilePicture = $result['profilePicture'];
