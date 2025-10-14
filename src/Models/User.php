@@ -2,8 +2,11 @@
 
 namespace Src\Models;
 
+use PDOException;
+
 use Src\Database\MySQL;
 use Src\Interfaces\ActiveRecord;
+use Src\Exceptions\Domain\InvalidEmailException;
 use Src\Exceptions\Domain\UserNotFoundException;
 use Src\Exceptions\Domain\EmailAlreadyExistsException;
 
@@ -39,7 +42,7 @@ class User implements ActiveRecord{
     }
 
     public static function validateEmail($email): bool{
-        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+        return filter_var($email, FILTER_SANITIZE_EMAIL) and filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     public static function validatePassword($password): bool{
@@ -48,19 +51,12 @@ class User implements ActiveRecord{
         return $result === 1;
     }
 
-    public static function verifyIfEmailAlreadyExists($email): bool{
-        $conn = MySQL::connect();
-        $sql = 'SELECT COUNT(userId) FROM users WHERE email=:email';
-        $stmt = $conn->prepare($sql);
-        $result = $stmt->execute([
-            'email' => $email 
-        ]);
-        return $result > 1;
-    }
-
 
     public function save(): bool{
         $conn = MySQL::connect();
+        if(!self::validateEmail($this->email)){
+            throw new InvalidEmailException();
+        }
         if(isset($this->userId)){
             $sql = "UPDATE Users SET username=:username, profilePicture=:profilePicture, email=:email WHERE userId=:userId";
             $stmt = $conn->prepare($sql);
@@ -70,19 +66,21 @@ class User implements ActiveRecord{
                 'email' => $this->email,
                 'userId' => $this->userId
             ]);
+            return $result;
         } else {
-            if(User::verifyIfEmailAlreadyExists($this->email)){
-                throw new EmailAlreadyExistsException();
+            try {
+                $sql = "INSERT INTO Users(username, email, password) VALUES(:username, :email, :password)";
+                $stmt = $conn->prepare($sql);
+                $result = $stmt->execute([
+                    'username' => $this->username,
+                    'email' => $this->email,
+                    'password' => password_hash($this->password, PASSWORD_BCRYPT)
+                ]);
+                return $result;
+            } catch (PDOException $e) {
+                throw new EmailAlreadyExistsException("This email already exists!", 0, $e);   
             }
-            $sql = "INSERT INTO Users(username, email, password) VALUES(:username, :email, :password)";
-            $stmt = $conn->prepare($sql);
-            $result = $stmt->execute([
-                'username' => $this->username,
-                'email' => $this->email,
-                'password' => password_hash($this->password, PASSWORD_BCRYPT)
-            ]);
         }
-        return $result;
     }
 
     public function delete(): bool{
@@ -98,14 +96,14 @@ class User implements ActiveRecord{
         $sql = "SELECT userId, username, profilePicture, email FROM users WHERE userId=:userId";
         $stmt = $conn->prepare($sql);
         $stmt->execute(['userId' => $userId]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetchAll();
         
         if(!$result){
             throw new UserNotFoundException();
         }
 
 
-        $user = new User($result['username'], $result['email']);
+        $user = new self($result['username'], $result['email']);
         $user->profilePicture = $result['profilePicture'];
         $user->userId = $result['userId'];
         return $user;
@@ -119,7 +117,7 @@ class User implements ActiveRecord{
         $results = $stmt->fetchAll();
         $users = [];
         foreach($results as $result){
-            $user = new User($result['username'], $result['email']);
+            $user = new self($result['username'], $result['email']);
             $user->profilePicture = $result['profilePicture'];
             $user->userId = $result['userId'];
             $users[] = $user;
@@ -150,6 +148,7 @@ class User implements ActiveRecord{
         $this->profilePicture = $profilePicture;
     }
     public function setPassword(string $password): void{
+        self::validatePassword($password);
         $this->password = $password;
     }
 

@@ -10,7 +10,7 @@ class Bathroom implements ActiveRecord{
     private int $bathroomId;
     private string $description;
     private bool $isPaid;
-    private int $price;
+    private ?int $price = null;
     private int $lat;
     private int $lon;
     private array $images;
