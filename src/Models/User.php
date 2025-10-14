@@ -21,13 +21,21 @@ class User implements ActiveRecord{
 
     public static function authenticate($email, $password): bool{
         $conn = MySQL::connect();
-        $sql = "SELECT password FROM users WHERE email=:email";
+        $sql = "SELECT userId, password FROM users WHERE email=:email";
         $stmt = $conn->prepare($sql);
         $stmt->execute([
             'email' => $email
         ]);
-        $passwordHash = $stmt->fetchColumn();
-        return password_verify($password, $passwordHash);
+        $result = $stmt->fetchAll();
+        if(password_verify($password, $result['password'])){
+            $session_user = User::find($result['userId']);
+            session_start();
+            $_SESSION['userId'] = $session_user->userId;
+            $_SESSION['username'] = $session_user->username;
+            $_SESSION['profile_picture'] = $session_user->profilePicture;
+            return true;
+        }
+        return false;
     }
 
     public static function validateEmail($email): bool{

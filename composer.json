@@ -3,7 +3,8 @@
     "autoload": {
         "psr-4": {
             "Src\\": "src/",
-            "Config\\": "config/"
+            "Config\\": "config/",
+            "Tests\\": "tests/"
         }
     },
     "require-dev": {
