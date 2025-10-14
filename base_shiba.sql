@@ -7,6 +7,7 @@ CREATE TABLE users (
     userId INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
+    username TEXT NOT NULL,
     password TEXT NOT NULL
 );
 
@@ -17,7 +18,7 @@ CREATE TABLE bathrooms (
     isPaid BOOLEAN NOT NULL DEFAULT FALSE,
     price DECIMAL(10,2),
     lat DECIMAL(9,6) NOT NULL,
-    long DECIMAL(9,6) NOT NULL,
+    lon DECIMAL(9,6) NOT NULL,
     ownerId INT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(userId)
 );

@@ -12,15 +12,15 @@ class Bathroom implements ActiveRecord{
     private bool $isPaid;
     private int $price;
     private int $lat;
-    private int $long;
+    private int $lon;
     private array $images;
     private User $owner;
     
 
-    public function __construct(string $description, bool $isPaid, int $price, int $lat, int $long, User $owner){
+    public function __construct(string $description, bool $isPaid, int $price, int $lat, int $lon, User $owner){
         $this->price = $price;
         $this->lat = $lat;
-        $this->long = $long;
+        $this->lon = $lon;
         $this->owner = $owner;
         $this->description = $description;
         $this->isPaid = $isPaid;
@@ -72,24 +72,24 @@ class Bathroom implements ActiveRecord{
     public function save(): bool{
         $conn = MySQL::connect();
         if($this->bathroomId){
-            $sql = "UPDATE bathrooms SET description=:description isPaid=:isPaid, price=:price, lat=:lat, long=:long WHERE bathroomId=:bathroomId";
+            $sql = "UPDATE bathrooms SET description=:description isPaid=:isPaid, price=:price, lat=:lat, lon=:lon WHERE bathroomId=:bathroomId";
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([
                 'description' => $this->description,
                 'isPaid' => $this->isPaid,
                 'price' => $this->price,
                 'lat' => $this->lat,
-                'long' => $this->long,
+                'lon' => $this->lon,
             ]);
         } else {
-            $sql = "INSERT INTO bathrooms(description, isPaid, price, lat, long, ownerId) VALUES(:description, :isPaid, :price, :lat, :long, :ownerId)";
+            $sql = "INSERT INTO bathrooms(description, isPaid, price, lat, lon, ownerId) VALUES(:description, :isPaid, :price, :lat, :lon, :ownerId)";
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([
                 'description' => $this->description,
                 'isPaid' => $this->isPaid,
                 'price' => $this->price,
                 'lat' => $this->lat,
-                'long' => $this->long,
+                'lon' => $this->lon,
                 'ownerId' => $this->owner->getUserId()
             ]);
         }
@@ -106,7 +106,7 @@ class Bathroom implements ActiveRecord{
 
     public static function find($bathroomId): Bathroom{
         $conn = MySQL::connect();
-        $sql = "SELECT b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.long AS long, 
+        $sql = "SELECT b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.lon AS lon, 
                 u.username AS owner_username, u.email AS owner_email, u.profilePicture as owner_picture 
                 FROM bathrooms b
                 JOIN user u ON u.userId=b.ownerId WHERE b.bathroomId=:bathroomId";
@@ -121,7 +121,7 @@ class Bathroom implements ActiveRecord{
         $owner = new User($result['owner_email'], $result['owner_username']);
         $owner->setProfilePicture($result['owner_picture']);
 
-        $bathroom = new Bathroom($result['description'], $result['isPaid'],$result['price'],$result['lat'],$result['long'],$owner);
+        $bathroom = new Bathroom($result['description'], $result['isPaid'],$result['price'],$result['lat'],$result['lon'],$owner);
         $bathroom->bathroomId = $result['bathroomId'];
         $bathroom->images = Bathroom::findBathroomImages($bathroom->bathroomId);
         return $bathroom;
@@ -129,7 +129,7 @@ class Bathroom implements ActiveRecord{
 
     public static function listAll(): array{
         $conn = MySQL::connect();
-        $sql = "SELECT b.bathroomId AS bathroomId, b.description AS description, b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.long AS long, 
+        $sql = "SELECT b.bathroomId AS bathroomId, b.description AS description, b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.lon AS lon, 
                 u.username AS owner_username, u.email AS owner_email, u.profilePicture as owner_picture 
                 FROM bathrooms b
                 JOIN user u ON u.userId=b.ownerId";
@@ -141,7 +141,7 @@ class Bathroom implements ActiveRecord{
             $owner = new User($result['owner_email'], $result['owner_username']);
             $owner->setProfilePicture($result['owner_picture']);
 
-            $bathroom = new Bathroom($result['description'], $result['isPaid'],$result['price'],$result['lat'],$result['long'],$owner);
+            $bathroom = new Bathroom($result['description'], $result['isPaid'],$result['price'],$result['lat'],$result['lon'],$owner);
             $bathroom->bathroomId = $result['bathroomId'];
             $bathroom->images = Bathroom::findBathroomImages($bathroom->bathroomId);
             $bathrooms[] = $bathroom;
@@ -164,8 +164,8 @@ class Bathroom implements ActiveRecord{
     public function getLat(): int{
         return $this->lat;
     }
-    public function getLong(): int{
-        return $this->long;
+    public function getlon(): int{
+        return $this->lon;
     }
     public function getOwner(): User{
         return $this->owner;

@@ -35,5 +35,3 @@ class MySQL{
         return self::$connection;
     }
 }
-
-

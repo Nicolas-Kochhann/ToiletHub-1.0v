@@ -26,7 +26,7 @@ class User implements ActiveRecord{
         $stmt->execute([
             'email' => $email
         ]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         if(password_verify($password, $result['password'])){
             $session_user = User::find($result['userId']);
             session_start();
@@ -50,7 +50,7 @@ class User implements ActiveRecord{
 
     public static function verifyIfEmailAlreadyExists($email): bool{
         $conn = MySQL::connect();
-        $sql = 'SELECT COUNT(userId) FROM users HAVING email=:email';
+        $sql = 'SELECT COUNT(userId) FROM users WHERE email=:email';
         $stmt = $conn->prepare($sql);
         $result = $stmt->execute([
             'email' => $email 
@@ -61,7 +61,7 @@ class User implements ActiveRecord{
 
     public function save(): bool{
         $conn = MySQL::connect();
-        if($this->userId){
+        if(isset($this->userId)){
             $sql = "UPDATE Users SET username=:username, profilePicture=:profilePicture, email=:email WHERE userId=:userId";
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([

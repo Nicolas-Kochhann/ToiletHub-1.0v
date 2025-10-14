@@ -1,5 +1,14 @@
 <?php
+require_once "../../../vendor/autoload.php";
+use Src\Models\User;
 
+if(isset($_POST['button'])){
+    if(User::authenticate($_POST['email'], $_POST['password'])){
+        header("location: ../../list-bathrooms/index.php");
+    }else{
+        header("location: index.php");
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +32,7 @@
                     <input type="password" name="password" id="password" required>
                     <img class="show-password" id="show-password" src="../../resources/images/eye.svg" alt="show passwd">
                 </div>
-                <button class="submit">Log in</button>
+                <button class="submit" name="button">Log in</button>
                 <p>Don't have an account? <strong><a href="../signup/">Sign up</a></strong></p>
             </form>
         </main>
