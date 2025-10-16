@@ -96,15 +96,15 @@ class Bathroom implements ActiveRecord{
         return $result;
     }
 
-    public function delete(): bool{
+    public static function delete(int $bathroomId): bool{
         $conn = MySQL::connect();
         $sql = "DELETE FROM bathrooms WHERE bathroomId=:bathroomId";
         $stmt = $conn->prepare($sql);
-        $result = $stmt->execute(['bathroomId' => $this->bathroomId]);
+        $result = $stmt->execute(['bathroomId' => $bathroomId]);
         return $result;
     }
 
-    public static function find($bathroomId): Bathroom{
+    public static function find(int $bathroomId): Bathroom{
         $conn = MySQL::connect();
         $sql = "SELECT b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.lon AS lon, 
                 u.username AS owner_username, u.email AS owner_email, u.profilePicture as owner_picture 

@@ -39,15 +39,15 @@ class Review implements ActiveRecord{
         return $result;
     }
 
-    public function delete(): bool{
+    public static function delete(int $reviewId): bool{
         $conn = MySQL::connect();
         $sql = "DELETE FROM reviews WHERE reviewId=:reviewId";
         $stmt = $conn->prepare($sql);
-        $result = $stmt->execute(['reviewId' => $this->reviewId]);
+        $result = $stmt->execute(['reviewId' => $reviewId]);
         return $result;
     }
 
-    public static function find($reviewId): Review{
+    public static function find(int $reviewId): Review{
         $conn = MySQL::connect();
         $sql = "SELECT r.comment AS comment, 
                 b.bathroomId AS bathroomId, 

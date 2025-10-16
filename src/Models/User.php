@@ -6,6 +6,7 @@ use PDOException;
 
 use Src\Database\MySQL;
 use Src\Interfaces\ActiveRecord;
+use Src\Exceptions\Domain\InvalidPasswordException;
 use Src\Exceptions\Domain\InvalidEmailException;
 use Src\Exceptions\Domain\UserNotFoundException;
 use Src\Exceptions\Domain\EmailAlreadyExistsException;
@@ -24,6 +25,7 @@ class User implements ActiveRecord{
 
     public static function authenticate($email, $password): bool{
         $conn = MySQL::connect();
+        self::validatePassword($password);
         $sql = "SELECT userId, password FROM users WHERE email=:email";
         $stmt = $conn->prepare($sql);
         $stmt->execute([
@@ -41,11 +43,11 @@ class User implements ActiveRecord{
         return false;
     }
 
-    public static function validateEmail($email): bool{
+    public static function validateEmail(string $email): bool{
         return filter_var($email, FILTER_SANITIZE_EMAIL) and filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
-    public static function validatePassword($password): bool{
+    public static function validatePassword(string $password): bool{
         $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/';
         $result = preg_match($regex, $password);
         return $result === 1;
@@ -53,23 +55,27 @@ class User implements ActiveRecord{
 
 
     public function save(): bool{
-        $conn = MySQL::connect();
         if(!self::validateEmail($this->email)){
             throw new InvalidEmailException();
         }
         if(isset($this->userId)){
-            $sql = "UPDATE Users SET username=:username, profilePicture=:profilePicture, email=:email WHERE userId=:userId";
+            $conn = MySQL::connect();
+            $sql = "UPDATE users SET username=:username, profilePicture=:profilePicture, email=:email WHERE userId=:userId";
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([
                 'username' => $this->username,
-                'profilePicture' => $this->profilePicture,
+                'profilePicture' => $this->profilePicture ?? null,
                 'email' => $this->email,
                 'userId' => $this->userId
             ]);
             return $result;
         } else {
+            if(!self::validatePassword($this->password)){
+                throw new InvalidPasswordException();
+            }
             try {
-                $sql = "INSERT INTO Users(username, email, password) VALUES(:username, :email, :password)";
+                $conn = MySQL::connect();
+                $sql = "INSERT INTO users(username, email, password) VALUES(:username, :email, :password)";
                 $stmt = $conn->prepare($sql);
                 $result = $stmt->execute([
                     'username' => $this->username,
@@ -83,28 +89,27 @@ class User implements ActiveRecord{
         }
     }
 
-    public function delete(): bool{
+    public static function delete(int $userId): bool{
         $conn = MySQL::connect();
         $sql = "DELETE FROM users WHERE userId=:userId";
         $stmt = $conn->prepare($sql);
-        $result = $stmt->execute(['userId' => $this->userId]);
+        $result = $stmt->execute(['userId' => $userId]);
         return $result;
     }
 
-    public static function find($userId): User{
+    public static function find(int $userId): User{
         $conn = MySQL::connect();
         $sql = "SELECT userId, username, profilePicture, email FROM users WHERE userId=:userId";
         $stmt = $conn->prepare($sql);
         $stmt->execute(['userId' => $userId]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
         
         if(!$result){
             throw new UserNotFoundException();
         }
 
-
-        $user = new self($result['username'], $result['email']);
-        $user->profilePicture = $result['profilePicture'];
+        $user = new self($result['email'], $result['username']);
+        $user->profilePicture = $result['profilePicture'] ?? null;
         $user->userId = $result['userId'];
         return $user;
     }
@@ -117,8 +122,8 @@ class User implements ActiveRecord{
         $results = $stmt->fetchAll();
         $users = [];
         foreach($results as $result){
-            $user = new self($result['username'], $result['email']);
-            $user->profilePicture = $result['profilePicture'];
+            $user = new self($result['email'], $result['username']);
+            $user->profilePicture = $result['profilePicture'] ?? null;
             $user->userId = $result['userId'];
             $users[] = $user;
         }
@@ -131,7 +136,7 @@ class User implements ActiveRecord{
     public function getUsername(): string{
         return $this->username;
     } 
-    public function getProfilePicture(): string{
+    public function getProfilePicture(): ?string{
         return $this->profilePicture;
     } 
     public function getEmail(): string{
@@ -147,8 +152,8 @@ class User implements ActiveRecord{
     public function setProfilePicture(string $profilePicture): void{
         $this->profilePicture = $profilePicture;
     }
+
     public function setPassword(string $password): void{
-        self::validatePassword($password);
         $this->password = $password;
     }
 

@@ -1,8 +1,8 @@
 <?php
+require __DIR__."/../../vendor/autoload.php";
 
-require_once  "../../../vendor/autoload.php";
 use Src\Models\User;
 
-
-
-// $u->save();
+$r = new User('nicolas@gmail.com', 'nicolas');
+$r->setPassword('Vi@!9fz');
+$r->save();
