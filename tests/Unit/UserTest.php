@@ -46,6 +46,7 @@ final class UserTest extends TestCase {
       $this->assertSame(true, $result);
    }
 
+   #[Depends('testValidateEmailWithInvalidEmail')]
      public function testInvalidEmailException(): void{
          $this->expectException(InvalidEmailException::class);
          $u = new User('vojoja.com', 'marcelo');
@@ -91,7 +92,7 @@ final class UserTest extends TestCase {
 
          $result = User::authenticate('nicolas@gmail.com', 'Vi@!9fz');
          $this->assertSame(true, $result);
-         
+
          $result = User::authenticate('nicolas@gmail.com', '1322VVVV');
          $this->assertSame(false, $result);
          
