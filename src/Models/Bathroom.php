@@ -11,14 +11,14 @@ class Bathroom implements ActiveRecord{
     private string $description;
     private bool $isPaid;
     private ?int $price = null;
-    private int $lat;
-    private int $lon;
+    private float $lat;
+    private float $lon;
     private array $images;
     private User $owner;
     
 
-    public function __construct(string $description, bool $isPaid, int $price, int $lat, int $lon, User $owner){
-        $this->price = $price;
+    public function __construct(string $description, bool $isPaid, ?int $price, float $lat, float $lon, User $owner){
+        $this->price = $price ?? null;
         $this->lat = $lat;
         $this->lon = $lon;
         $this->owner = $owner;
@@ -48,10 +48,6 @@ class Bathroom implements ActiveRecord{
         $results = $stmt->fetchAll();
         $images = [];
 
-        if(!$results){
-            
-        }
-
         foreach ($results as $result) {
             $images[] = $result['image'];
         }
@@ -61,7 +57,7 @@ class Bathroom implements ActiveRecord{
 
     public static function deleteImage(int $bathroomId, string $image): void{
         $conn = MySQL::connect();
-        $sql = 'DELETE * FROM bathrooms_images WHERE image=:image AND bathroomId=:bathroomId';
+        $sql = 'DELETE FROM bathrooms_images WHERE image=:image AND bathroomId=:bathroomId';
         $stmt = $conn->prepare($sql);
         $stmt->execute([
             'image' => $image,
@@ -71,22 +67,23 @@ class Bathroom implements ActiveRecord{
 
     public function save(): bool{
         $conn = MySQL::connect();
-        if($this->bathroomId){
-            $sql = "UPDATE bathrooms SET description=:description isPaid=:isPaid, price=:price, lat=:lat, lon=:lon WHERE bathroomId=:bathroomId";
+        if(isset($this->bathroomId)){
+            $sql = "UPDATE bathrooms SET description=:description, isPaid=:isPaid, price=:price, lat=:lat, lon=:lon WHERE bathroomId=:bathroomId";
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([
+                'bathroomId' => $this->bathroomId,
                 'description' => $this->description,
-                'isPaid' => $this->isPaid,
+                'isPaid' => $this->isPaid ? 1 : 0,
                 'price' => $this->price,
                 'lat' => $this->lat,
-                'lon' => $this->lon,
+                'lon' => $this->lon
             ]);
         } else {
             $sql = "INSERT INTO bathrooms(description, isPaid, price, lat, lon, ownerId) VALUES(:description, :isPaid, :price, :lat, :lon, :ownerId)";
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([
                 'description' => $this->description,
-                'isPaid' => $this->isPaid,
+                'isPaid' => $this->isPaid ? 1 : 0,
                 'price' => $this->price,
                 'lat' => $this->lat,
                 'lon' => $this->lon,
@@ -106,10 +103,10 @@ class Bathroom implements ActiveRecord{
 
     public static function find(int $bathroomId): Bathroom{
         $conn = MySQL::connect();
-        $sql = "SELECT b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.lon AS lon, 
-                u.username AS owner_username, u.email AS owner_email, u.profilePicture as owner_picture 
+        $sql = "SELECT b.bathroomId AS bathroomId, b.description AS description, b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.lon AS lon, 
+                u.userId AS owner_id, u.username AS owner_username, u.email AS owner_email, u.profilePicture as owner_picture 
                 FROM bathrooms b
-                JOIN user u ON u.userId=b.ownerId WHERE b.bathroomId=:bathroomId";
+                JOIN users u ON u.userId=b.ownerId WHERE b.bathroomId=:bathroomId";
         $stmt = $conn->prepare($sql);
         $stmt->execute(['bathroomId' => $bathroomId]);
         $result = $stmt->fetch();
@@ -120,6 +117,7 @@ class Bathroom implements ActiveRecord{
 
         $owner = new User($result['owner_email'], $result['owner_username']);
         $owner->setProfilePicture($result['owner_picture']);
+        $owner->setUserId($result['owner_id']);
 
         $bathroom = new Bathroom($result['description'], $result['isPaid'],$result['price'],$result['lat'],$result['lon'],$owner);
         $bathroom->bathroomId = $result['bathroomId'];
@@ -130,9 +128,9 @@ class Bathroom implements ActiveRecord{
     public static function listAll(): array{
         $conn = MySQL::connect();
         $sql = "SELECT b.bathroomId AS bathroomId, b.description AS description, b.isPaid AS isPaid, b.price AS price, b.lat AS lat, b.lon AS lon, 
-                u.username AS owner_username, u.email AS owner_email, u.profilePicture as owner_picture 
+                u.userId AS owner_id, u.username AS owner_username, u.email AS owner_email, u.profilePicture as owner_picture 
                 FROM bathrooms b
-                JOIN user u ON u.userId=b.ownerId";
+                JOIN users u ON u.userId=b.ownerId";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $results = $stmt->fetchAll();
@@ -140,6 +138,7 @@ class Bathroom implements ActiveRecord{
         foreach($results as $result){
             $owner = new User($result['owner_email'], $result['owner_username']);
             $owner->setProfilePicture($result['owner_picture']);
+            $owner->setUserId($result['owner_id']);
 
             $bathroom = new Bathroom($result['description'], $result['isPaid'],$result['price'],$result['lat'],$result['lon'],$owner);
             $bathroom->bathroomId = $result['bathroomId'];
@@ -158,13 +157,13 @@ class Bathroom implements ActiveRecord{
     public function getIsPaid(): bool{
         return $this->isPaid;
     }   
-    public function getPrice(): int{
+    public function getPrice(): ?int{
         return $this->price;
     }   
-    public function getLat(): int{
+    public function getLat(): float{
         return $this->lat;
     }
-    public function getlon(): int{
+    public function getLon(): float{
         return $this->lon;
     }
     public function getOwner(): User{

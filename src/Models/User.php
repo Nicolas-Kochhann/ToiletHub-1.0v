@@ -149,7 +149,7 @@ class User implements ActiveRecord{
     public function setUserId(int $userId): void{
         $this->userId = $userId;
     }
-    public function setProfilePicture(string $profilePicture): void{
+    public function setProfilePicture(?string $profilePicture): void{
         $this->profilePicture = $profilePicture;
     }
 

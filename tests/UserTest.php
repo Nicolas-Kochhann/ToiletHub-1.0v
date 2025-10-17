@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-require_once __DIR__."/../../vendor/autoload.php";
+require_once __DIR__."/../vendor/autoload.php";
 
 
-use PDOStatement;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Depends;
 

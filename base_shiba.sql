@@ -16,7 +16,7 @@ CREATE TABLE bathrooms (
     bathroomId INT AUTO_INCREMENT PRIMARY KEY,
     description VARCHAR(100),
     isPaid BOOLEAN NOT NULL DEFAULT FALSE,
-    price DECIMAL(10,2) DEFAULT NULL,
+    price BIGINT DEFAULT NULL,
     lat DECIMAL(9,6) NOT NULL,
     lon DECIMAL(9,6) NOT NULL,
     ownerId INT NOT NULL,
