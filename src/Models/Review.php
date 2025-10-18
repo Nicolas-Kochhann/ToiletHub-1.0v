@@ -21,11 +21,12 @@ class Review implements ActiveRecord{
 
     public function save(): bool{
         $conn = MySQL::connect();
-        if($this->reviewId){
+        if(isset($this->reviewId)){
             $sql = "UPDATE reviews SET comment=:comment WHERE reviewId=:reviewId";
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([
-                'comment' => $this->comment
+                'comment' => $this->comment,
+                'reviewId' => $this->reviewId
             ]);
         } else {
             $sql = "INSERT INTO reviews(comment, bathroomId, userId) VALUES(:comment, :bathroomId, :userId)";
@@ -49,32 +50,36 @@ class Review implements ActiveRecord{
 
     public static function find(int $reviewId): Review{
         $conn = MySQL::connect();
-        $sql = "SELECT r.comment AS comment, 
+        $sql = "SELECT r.reviewId AS reviewId, r.comment AS comment, 
                 b.bathroomId AS bathroomId, 
-                u.email AS user_email, u.username AS username, u.profilePicture AS user_picture 
+                u.userId AS user_id, u.email AS user_email, u.username AS username, u.profilePicture AS user_picture 
                 FROM reviews r
                 JOIN users u ON u.userId=r.userId
                 JOIN bathrooms b ON b.bathroomId = r.bathroomId
                 WHERE reviewId=:reviewId";
         $stmt = $conn->prepare($sql);
         $stmt->execute(['reviewId' => $reviewId]);
-        $review = $stmt->fetch();
+        $result = $stmt->fetch();
         
-        if(!$reviewId){
+        if(!$result){
             throw new ReviewNotFoundException();
         }
 
-        $user = new User($review['email'], $review['username']);
-        $user->setProfilePicture($review['user_picture']);
+        $user = new User($result['user_email'], $result['username']);
+        $user->setProfilePicture($result['user_picture']);
+        $user->setUserId($result['user_id']);
 
-        return new Review($review['comment'], $review['bathroomId'], $user);
+        $review = new Review($result['comment'], $result['bathroomId'], $user);
+        $review->setReviewId($result['reviewId']);
+
+        return $review;
     }
 
     public static function listAll(): array{
         $conn = MySQL::connect();
-        $sql = "SELECT r.reviewId AS reviewId, b.comment AS comment, 
+        $sql = "SELECT r.reviewId AS reviewId, r.comment AS comment, 
                 b.bathroomId AS bathroomId, 
-                u.email AS user_email, u.username AS username, u.profilePicture AS user_picture 
+                u.userId AS user_id, u.email AS user_email, u.username AS username, u.profilePicture AS user_picture 
                 FROM reviews r
                 JOIN users u ON u.userId=r.userId
                 JOIN bathrooms b ON b.bathroomId = r.bathroomId";
@@ -83,10 +88,11 @@ class Review implements ActiveRecord{
         $results = $stmt->fetchAll();
         $reviews = [];
         foreach($results as $result){
-            $user = new User($result['email'], $result['username']);
+            $user = new User($result['user_email'], $result['username']);
             $user->setProfilePicture($result['user_picture']);
+            $user->setUserId($result['user_id']);
 
-            $review = new Review($result['comment'], $result['bathroomId'], $result['user']);
+            $review = new Review($result['comment'], $result['bathroomId'], $user);
             $review->reviewId = $result['reviewId'];
             $reviews[] = $review;
         }
