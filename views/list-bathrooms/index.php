@@ -11,7 +11,7 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bathroomhub</title>
     <link rel="icon" href="../resources/images/shiba_icon.ico">
-    <link rel="stylesheet" href="../styles/listBathroomStyle.css">
+    <link rel="stylesheet" href="../styles/listStyle.css">
 </head>
 <body>
     <div class="container">
@@ -28,9 +28,13 @@ session_start();
 
             ?>
             <div class="profile-container">
-                <a class="link-profile" href="">
-                    <img class="image-profile" src="../resources/images/pfp-default.svg" alt="pfp">
-                </a>
+            <?php
+            if(isset($_SESSION['userId'])){
+                echo '<a class="link-profile" href="">
+                <img class="image-profile" src="../resources/images/pfp-default.svg" alt="pfp">
+                </a>';
+            }    
+            ?>      
             </div>
         </header>
 
