@@ -60,22 +60,30 @@ img.image-profile {
     height: calc(100vh - 80px);
 
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    padding: 10px;
+    gap: 5px;
 }
 
-.bathroom-list-container {
-    width: 200px;
-    height: 100%;
-}
-
-
-.card-image {
+.bathroom-card-container {
     width: 100%;
-    height: 150px;
-    /* adjust as needed */
+    height: fit-content;
+    border-radius: 10px;
+    border: 1px solid #0000002d;
+    box-shadow: 0 0 10px #0000002d;
+    display: flex;
+    flex-direction: column;
+}
+
+.bathroom-card-image {
     object-fit: cover;
-    display: block;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+    width: 100%;
+    aspect-ratio: 1 /1;
+    border-radius: 10px;
+}
+
+.bathroom-text-container {
+    width: 100%;
+    margin: 3px 3px;
 }

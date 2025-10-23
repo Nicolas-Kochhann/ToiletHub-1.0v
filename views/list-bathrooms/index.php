@@ -35,12 +35,14 @@ session_start();
         </header>
 
         <main>
+
             <div class="list-grid">
-                <div class="bathroom-list-container">
-                    <img class="card-image" src="../resources/images/placeholders/japanese-shitroom.png">
-                    <div class="card-info">
-                        <h3>Banheiro TangKuan</h3>
-                    </div>
+
+                <div class="bathroom-card-container">
+                    <img src="../resources/images/placeholders/brazilian-bathroom.png" alt="" class="bathroom-card-image">
+                    <span class="bathroom-text-container">
+                        <strong>Cag'gannrah (indian toilet)</strong>
+                    </span>
                 </div>
             </div>
         </main>
