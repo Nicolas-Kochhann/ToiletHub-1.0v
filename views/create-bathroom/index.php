@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 ?>
 
 <!DOCTYPE html>
@@ -9,16 +7,15 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bathroomhub</title>
+    <title>ToiletHub</title>
     <link rel="icon" href="../resources/images/shiba_icon.ico">
     <link rel="stylesheet" href="../styles/listStyle.css">
-    <link rel="preload" href="../resources/images/toilethub_logo.gif" as="image">
 </head>
 <body>
     <div class="container">
 
         <header>
-            <div class="logo-container"></div>
+            <img src="../resources/images/toilethub_logo.png" alt="logo">
             <?php
 
                 if (isset($_SESSION["userId"])) {
@@ -38,19 +35,6 @@ session_start();
             ?>      
             </div>
         </header>
-
-        <main>
-
-            <div class="list-grid">
-
-                <div class="bathroom-card-container">
-                    <img src="../resources/images/placeholders/japanese-shitroom.png" alt="" class="bathroom-card-image">
-                    <span class="bathroom-text-container">
-                        <strong>MacuDunoradus Batirumo</strong>
-                    </span>
-                </div>
-            </div>
-        </main>
 
     </div>
 </body>
