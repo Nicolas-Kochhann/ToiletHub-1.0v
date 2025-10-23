@@ -23,7 +23,7 @@ session_start();
                 if (isset($_SESSION["userId"])) {
                     echo "<a class='link-create-bathroom' href=''>+ Create Bathroom</a>";
                 } else {
-                    echo "<span></span>";
+                    echo "<a class='link-create-bathroom' href='../account/login'>+ Log in or Create Account</a>";
                 }
 
             ?>

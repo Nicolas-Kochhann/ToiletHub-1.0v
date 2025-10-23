@@ -88,4 +88,26 @@ img.image-profile {
     margin: 3px 3px;
 }
 
-@media
+@media (max-width: 1300px) {
+    .list-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+@media (max-width: 850px) {
+    .list-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 500px) {
+    .list-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 300px) {
+    .list-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
