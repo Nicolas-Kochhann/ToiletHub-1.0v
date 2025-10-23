@@ -1,7 +1,29 @@
 <?php
-
 session_start();
 
+require_once "../../../vendor/autoload.php";
+use Src\Exceptions\Domain\EmailAlreadyExistsException;
+use Src\Exceptions\Domain\InvalidEmailException;
+use Src\Exceptions\Domain\InvalidPasswordException;
+use Src\Models\User;
+
+$error = '';
+
+if(isset($_POST['button'])){
+    $u = new User($_POST['email'], $_POST['username']);
+    $u->setPassword($_POST['password']);
+
+        try{
+            $u->save();
+            header("location: ../login/index.php");
+        } catch(InvalidEmailException $e) {
+            $error = 'Invalid email!';
+        } catch(InvalidPasswordException $e) {
+            $error = 'Invalid password!';
+        } catch(EmailAlreadyExistsException $e) {
+            $error = 'This email is already registered. <a href="../login/">Log in</a>.';
+        }
+}
 ?>
 
 <!DOCTYPE html>
@@ -9,7 +31,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bathroomhub</title>
+    <title>ToiletHub</title>
     <link rel="icon" href="../resources/images/shiba_icon.ico">
     <link rel="stylesheet" href="../styles/listStyle.css">
 </head>
@@ -28,20 +50,14 @@ session_start();
 
             ?>
             <div class="profile-container">
-            <?php
-            if(isset($_SESSION['userId'])){
-                echo '<a class="link-profile" href="">
-                <img class="image-profile" src="../resources/images/pfp-default.svg" alt="pfp">
-                </a>';
-            }    
-            ?>      
+                <a class="link-profile" href="">
+                    <img class="image-profile" src="../resources/images/pfp-default.svg" alt="pfp">
+                </a>
             </div>
         </header>
 
         <main>
-
             <div class="list-grid">
-
                 <div class="bathroom-card-container">
                     <img src="../resources/images/placeholders/brazilian-bathroom.png" alt="" class="bathroom-card-image">
                     <span class="bathroom-text-container">

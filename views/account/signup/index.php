@@ -1,17 +1,26 @@
 <?php
 require_once "../../../vendor/autoload.php";
+use Src\Exceptions\Domain\EmailAlreadyExistsException;
+use Src\Exceptions\Domain\InvalidEmailException;
+use Src\Exceptions\Domain\InvalidPasswordException;
 use Src\Models\User;
+
+$error = '';
 
 if(isset($_POST['button'])){
     $u = new User($_POST['email'], $_POST['username']);
     $u->setPassword($_POST['password']);
 
-    if($u->validateEmail($_POST['email'])){
-        $u->save();
-        header("location: ../login/index.php");
-    }else{
-        header("location: index.php");
-    }
+        try{
+            $u->save();
+            header("location: ../login/index.php");
+        } catch(InvalidEmailException $e) {
+            $error = 'Invalid email!';
+        } catch(InvalidPasswordException $e) {
+            $error = 'Invalid password!';
+        } catch(EmailAlreadyExistsException $e) {
+            $error = 'This email is already registered. <a href="../login/">Log in</a>.';
+        }
 }
 ?>
 
@@ -22,13 +31,14 @@ if(isset($_POST['button'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bathroomhub - Sign up</title>
     <link rel="icon" href="../../resources/images/shiba_icon.ico">
-    <link rel="stylesheet" href="../../styles/loginFormStyle.css">
+    <link rel="stylesheet" href="../../styles/loginStyle.css">
 </head>
 <body>
     <div class="container">
         <main class="form-container">
             <form class="big-form" action="index.php" method="POST">
                 <h1 class="form-title">Register</h1>
+                <div class="error"><?php echo $error; ?></div>
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username" required>
                 <label for="email">E-mail</label>

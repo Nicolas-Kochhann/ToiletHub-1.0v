@@ -18,7 +18,7 @@ if(isset($_POST['button'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bathroomhub - Log in</title>
     <link rel="icon" href="../../resources/images/shiba_icon.ico">
-    <link rel="stylesheet" href="../../styles/loginFormStyle.css">
+    <link rel="stylesheet" href="../../styles/loginStyle.css">
 </head>
 <body>
     <div class="container">

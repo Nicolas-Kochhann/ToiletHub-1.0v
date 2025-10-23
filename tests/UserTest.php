@@ -73,7 +73,7 @@ final class UserTest extends TestCase {
 
          $array = [$g];
          $result = User::listAll();
-         $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys($array, $result, [0]);
+         $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys($array, $result, [0]);      
 
          $result = User::delete($lastId);
          $this->assertSame(true, $result);

@@ -1,5 +1,5 @@
 <?php
 
-    header("Location: views/account/login/");
+    header("Location: views/list-bathrooms/");
 
 ?>
