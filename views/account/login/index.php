@@ -18,11 +18,12 @@ if(isset($_POST['button'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bathroomhub - Log in</title>
     <link rel="icon" href="../../resources/images/shiba_icon.ico">
-    <link rel="stylesheet" href="../../styles/loginStyle.css">
+    <link rel="stylesheet" href="../../styles/formStyle.css">
 </head>
 <body>
     <div class="container">
         <main class="form-container">
+            <img class="fixed-logo" src="../../resources/images/toilethub_logo.png" alt="">
             <form class="big-form" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
                 <h1 class="form-title">Log in</h1>
                 <label for="email">E-mail</label>

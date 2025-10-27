@@ -31,11 +31,12 @@ if(isset($_POST['button'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bathroomhub - Sign up</title>
     <link rel="icon" href="../../resources/images/shiba_icon.ico">
-    <link rel="stylesheet" href="../../styles/loginStyle.css">
+    <link rel="stylesheet" href="../../styles/formStyle.css">
 </head>
 <body>
     <div class="container">
         <main class="form-container">
+            <img class="fixed-logo" src="../../resources/images/toilethub_logo.png" alt="">
             <form class="big-form" action="index.php" method="POST">
                 <h1 class="form-title">Register</h1>
                 <div class="error"><?php echo $error; ?></div>

@@ -1,0 +1,63 @@
+.container-create-bathroom {
+  width: 100%;
+  height: calc(100vh - 80px);
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-bathroom-form {
+  padding: 20px;
+  width: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+}
+
+.create-bathroom-form input.create-bathroom-input {
+  width: 100%;
+  padding: 10px;
+  font-family: "Roboto", sans-serif;
+  font-size: 1.04rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  margin: 0 0 20px 0;
+}
+
+.create-bathroom-form label {
+  font-size: 1.04rem;
+}
+
+.drop-container {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px dashed #555;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
+  margin: 0 0 20px 0;
+}
+
+.drop-container:hover {
+  background: #eeeeee;
+  border-color: #111;
+}
+
+.drop-container:hover .drop-title {
+  color: #222;
+}
+
+.drop-title {
+  color: #444;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  transition: color 0.2s ease-in-out;
+}

@@ -22,7 +22,7 @@ session_start();
             <?php
 
                 if (isset($_SESSION["userId"])) {
-                    echo "<a class='link-create-bathroom' href=''>+ Create Bathroom</a>";
+                    echo "<a class='link-create-bathroom' href='../create-bathroom'>+ Create Bathroom</a>";
                 } else {
                     echo "<a class='link-create-bathroom' href='../account/login'>+ Log in or Create Account</a>";
                 }
@@ -49,6 +49,7 @@ session_start();
                         <strong>MacuDunoradus Batirumo</strong>
                     </span>
                 </div>
+                
             </div>
         </main>
 

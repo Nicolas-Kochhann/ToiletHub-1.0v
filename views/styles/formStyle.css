@@ -114,3 +114,18 @@ form.big-form p {
 strong a {
   color: #75caff;
 }
+
+.fixed-logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 250px;
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 1px #75caff);
+}
+
+.fixed-logo:hover {
+  cursor: url(../resources/images/shiba_icon.ico), pointer;
+}
