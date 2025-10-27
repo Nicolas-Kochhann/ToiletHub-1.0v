@@ -46,7 +46,7 @@ session_start();
                     <label for="images" class="drop-container" id="dropcontainer">
                         <span class="drop-title">Drop images of the bathroom here</span>
                         or
-                        <input type="file" id="images" accept="image/*" required>
+                        <input type="file" id="images" accept="image/*" multiple required>
                     </label>
                     <label for="description">Description</label>
                     <input class="create-bathroom-input" type="text" name="description" id="description">
@@ -75,6 +75,29 @@ session_start();
         checkbox.addEventListener('change', function() {
             priceInput.disabled = this.checked ? false : true;
         });
+
+        const dropContainer = document.getElementById("dropcontainer")
+        const fileInput = document.getElementById("images")
+
+        dropContainer.addEventListener("dragover", (e) => {
+            // prevent default to allow drop
+            e.preventDefault()
+        }, false)
+
+        dropContainer.addEventListener("dragenter", () => {
+            dropContainer.classList.add("drag-active")
+        })
+
+        dropContainer.addEventListener("dragleave", () => {
+            dropContainer.classList.remove("drag-active")
+        })
+
+        dropContainer.addEventListener("drop", (e) => {
+            e.preventDefault()
+            dropContainer.classList.remove("drag-active")
+            fileInput.files = e.dataTransfer.files
+        })
+
     </script>
 </body>
 </html>
