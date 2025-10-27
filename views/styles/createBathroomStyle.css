@@ -12,6 +12,7 @@
   width: 50%;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 20px;
+  box-shadow: 0 0 30px #0000005d;
 }
 
 .create-bathroom-form input.create-bathroom-input {
@@ -26,6 +27,62 @@
 
 .create-bathroom-form label {
   font-size: 1.04rem;
+}
+
+.bathroom-price-input {
+  padding: 10px;
+  font-family: "Roboto", sans-serif;
+  font-size: 1.04rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  margin: 0 0 0 20px;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  width: 2ch;
+  height: 2ch;
+  border: 2px solid #333;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 5px 0 0;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #60b3e7; /* Green when checked */
+  border-color: #4c8cb4;
+}
+
+.container-fields {
+  display: flex;
+  align-items: center;
+  margin: 0 0 20px 0;
+}
+
+.latlon-input {
+  padding: 10px;
+  font-family: "Roboto", sans-serif;
+  font-size: 1.04rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  margin: 0 0 20px 0;
+  width: 50ch;
+}
+
+button {
+  padding: 10px;
+  font-family: "Roboto", sans-serif;
+  font-size: 1.04rem;
+  background-color: #75caff;
+  border: 1px solid #4c8cb4;
+  border-radius: 5px;
+  margin: 0 0 20px 0;
+  width: 50ch;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: #60b3e7;
 }
 
 .drop-container {
@@ -60,4 +117,22 @@
   font-weight: bold;
   text-align: center;
   transition: color 0.2s ease-in-out;
+}
+
+.submit {
+  color: white;
+  width: 100%;
+  padding: 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 1.04rem;
+  margin: 10px 0 10px 0;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  background-color: #75caff;
+  transition: background-color 0.2s ease;
+}
+
+.submit:hover {
+  background-color: #60b3e7;
+  cursor: pointer;
 }

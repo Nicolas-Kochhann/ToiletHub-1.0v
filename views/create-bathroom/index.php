@@ -50,16 +50,31 @@ session_start();
                     </label>
                     <label for="description">Description</label>
                     <input class="create-bathroom-input" type="text" name="description" id="description">
-                    <div class="container-paid">
-                        <label for="is-paid">Is it paid?</label>
+                    <div class="container-fields">
                         <input type="checkbox" name="is-paid" id="isPaid">
-                        <input class="create-bathroom-input" type="number" name="price" id="price" placeholder="How much?">
+                        <label for="isPaid">Is it paid?</label>
+                        <input class="bathroom-price-input" type="number" name="price" id="price" placeholder="How much?">
                     </div>
+                    <label for="lat">Lat</label><br>
+                    <input class="latlon-input" type="text" name="lat" id="lat"><br>
+                    <label for="lon">Lon</label><br>
+                    <input class="latlon-input" type="text" name="lon" id="lon"><br>
+                    <button type="button">Use Current Location</button>
+                    <button class="submit">Create Bathroom</button>
                 </form>
             </div>
 
         </main>
 
     </div>
+    <script>
+        const checkbox = document.getElementById('isPaid');
+        const priceInput = document.getElementById('price');
+        priceInput.disabled = true;
+
+        checkbox.addEventListener('change', function() {
+            priceInput.disabled = this.checked ? false : true;
+        });
+    </script>
 </body>
 </html>
