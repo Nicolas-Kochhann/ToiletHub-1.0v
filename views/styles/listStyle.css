@@ -97,6 +97,8 @@ img.image-profile {
   box-shadow: 0 0 10px #0000002d;
   display: flex;
   flex-direction: column;
+  text-decoration: none;
+  color: black;
 }
 
 .bathroom-card-image {
@@ -108,7 +110,8 @@ img.image-profile {
 
 .bathroom-text-container {
   width: 100%;
-  margin: 3px 3px;
+  margin: 3px 5px;
+  font-size: 1.05rem;
 }
 
 @media (max-width: 1300px) {

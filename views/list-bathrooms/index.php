@@ -51,19 +51,17 @@ $bathrooms = Bathroom::listAll();
                 if(count($bathrooms) > 0){
                     foreach($bathrooms as $bathroom){
                         $images = Bathroom::findBathroomImages($bathroom->getBathroomId());
-                        echo "<div class='bathroom-card-container'>
+                        echo "<a href='../view-bathroom/index.php?bathroomId={$bathroom->getBathroomId()}' class='bathroom-card-container'>
                                 <img src='../../resources/bathrooms/{$bathroom->getBathroomId()}/{$images[0]}' alt='' class='bathroom-card-image'>
                                 <span class='bathroom-text-container'>
-                                <strong>{$bathroom->getDescription()}</strong>
+                                    <strong>{$bathroom->getDescription()}</strong>
                                 </span>
-                            </div>";
+                            </a>";
                     }
                 } else {
                     echo "<h1>No registered toilets yet. You can be the first ;)";
                 }
-
                 ?>
-                
             </div>
         </main>
 
