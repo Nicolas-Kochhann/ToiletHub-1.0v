@@ -2,6 +2,7 @@
 
 require __DIR__."/../../vendor/autoload.php";
 
+use BcMath\Number;
 use Src\Models\User;
 use Src\Models\Bathroom;
 
@@ -12,6 +13,16 @@ if (!isset($_SESSION["userId"])) {
 }
 
 $loggedUser = User::find($_SESSION['userId']);
+
+if (isset($_POST['submit'])){
+    $description = htmlspecialchars($_POST['description']);
+    $isPaid = htmlspecialchars($_POST['is-paid']);
+    $price = (int)htmlspecialchars($_POST['price']) ?? null;
+    $lat = htmlspecialchars($_POST['lat']);
+    $lon = htmlspecialchars($_POST['lon']);
+
+    $bathroom = new Bathroom();
+}
 
 ?>
 
@@ -33,7 +44,7 @@ $loggedUser = User::find($_SESSION['userId']);
                     <a class='link-create-bathroom' href='../list-bathrooms/'>< Go Back</a>";
             <div class="profile-container">
             <?php
-            $profilePicture = isset($_SESSION['profilePicture']) ? $_SESSION['profilePicture'] : '../resources/images/pfp-default.svg';
+            $profilePicture = $_SESSION['profilePicture'] ?? '../resources/images/pfp-default.svg';
         
             echo "<a class='link-profile' href=''>
                 <img class='image-profile' src='{$profilePicture}' alt='pfp'>
@@ -58,12 +69,12 @@ $loggedUser = User::find($_SESSION['userId']);
                         <label for="isPaid">Is it paid?</label>
                         <input class="bathroom-price-input" type="number" name="price" id="price" placeholder="How much?">
                     </div>
-                    <label for="lat">Lat</label><br>
+                    <label for="lat">Latitude</label><br>
                     <input class="latlon-input" type="text" name="lat" id="lat"><br>
-                    <label for="lon">Lon</label><br>
+                    <label for="lon">Longitude</label><br>
                     <input class="latlon-input" type="text" name="lon" id="lon"><br>
                     <button type="button">Use Current Location</button>
-                    <button class="submit">Create Bathroom</button>
+                    <button class="submit" name="submit">Create Bathroom</button>
                 </form>
             </div>
 
