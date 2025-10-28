@@ -148,6 +148,33 @@ class Bathroom implements ActiveRecord{
         return $bathrooms;
     }
 
+    public function uploadImage() : array{
+
+        $dir = "/../../resources/bathrooms/";
+
+        if(mkdir($dir . $this->bathroomId)){
+            foreach($_FILES['images'] as $i){
+                $archName = $i['name'];
+                $info_name = explode("." , $archName);
+                $ext = end($info_name);
+                $newName = uniqid().".".$ext;
+
+                $imageNames = [];
+
+                if(move_uploaded_file($i['tmp_name'], $dir.$newName)){
+                    $imageNames[] = $newName;
+                    echo "Upload realizado com sucesso.";
+                }else{
+                    echo "Upload não foi realizado.";
+                }
+            }
+            return $imageNames;
+        }else{
+            throw new UploadException();
+        }
+        
+    }
+
     public function getBathroomId(): int{
         return $this->bathroomId;
     }
