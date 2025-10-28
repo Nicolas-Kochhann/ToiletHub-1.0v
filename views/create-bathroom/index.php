@@ -2,15 +2,16 @@
 
 require __DIR__."/../../vendor/autoload.php";
 
-
+use Src\Models\User;
+use Src\Models\Bathroom;
 
 session_start();
 
-if(!isset($_SESSION['userId'])){
-    header('Location: ');
+if (!isset($_SESSION["userId"])) {
+    header("Location: ../account/login");
 }
 
-$user = User::find($_SESSION['userId']);
+$loggedUser = User::find($_SESSION['userId']);
 
 ?>
 
@@ -29,23 +30,15 @@ $user = User::find($_SESSION['userId']);
 
         <header>
             <div class="logo-container"></div>
-            <?php
-
-                if (isset($_SESSION["userId"])) {
-                    echo "<a class='link-create-bathroom' href=''>< Go Back</a>";
-                } else {
-                    header("Location: ../account/login");
-                }
-
-            ?>
+                    <a class='link-create-bathroom' href='../list-bathrooms/'>< Go Back</a>";
             <div class="profile-container">
             <?php
-            if(isset($_SESSION['userId'])){
-                echo '<a class="link-profile" href="">
-                <img class="image-profile" src="../resources/images/pfp-default.svg" alt="pfp">
-                </a>';
-            }    
-            ?>      
+            $profilePicture = isset($_SESSION['profilePicture']) ? $_SESSION['profilePicture'] : '../resources/images/pfp-default.svg';
+        
+            echo "<a class='link-profile' href=''>
+                <img class='image-profile' src='{$profilePicture}' alt='pfp'>
+                </a>";
+            ?>   
             </div>
         </header>
 
