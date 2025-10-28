@@ -1,7 +1,12 @@
 <?php
 
+require __DIR__."/../../vendor/autoload.php";
+
+use Src\Models\Bathroom;
+
 session_start();
 
+$bathrooms = Bathroom::listAll();
 ?>
 
 <!DOCTYPE html>
@@ -42,7 +47,23 @@ session_start();
         <main>
 
             <div class="list-grid">
+                <?php
+                if(count($bathrooms) > 0){
+                    foreach($bathrooms as $bathroom){
+                        $images = Bathroom::findBathroomImages($bathroom->getBathroomId());
+                        echo "<div class='bathroom-card-container'>
+                                <img src='../../resources/bathrooms/{$bathroom->getBathroomId()}/{$images[0]}' alt='' class='bathroom-card-image'>
+                                <span class='bathroom-text-container'>
+                                <strong>{$bathroom->getDescription()}</strong>
+                                </span>
+                            </div>";
+                    }
+                } else {
+                    echo "<h1>No registered toilets yet. Be you the first ;)";
+                }
 
+                ?>
+                
                 <div class="bathroom-card-container">
                     <img src="../resources/images/placeholders/japanese-shitroom.png" alt="" class="bathroom-card-image">
                     <span class="bathroom-text-container">
