@@ -59,17 +59,10 @@ $bathrooms = Bathroom::listAll();
                             </div>";
                     }
                 } else {
-                    echo "<h1>No registered toilets yet. Be you the first ;)";
+                    echo "<h1>No registered toilets yet. You can be the first ;)";
                 }
 
                 ?>
-                
-                <div class="bathroom-card-container">
-                    <img src="../resources/images/placeholders/japanese-shitroom.png" alt="" class="bathroom-card-image">
-                    <span class="bathroom-text-container">
-                        <strong>MacuDunoradus Batirumo</strong>
-                    </span>
-                </div>
                 
             </div>
         </main>
