@@ -39,7 +39,11 @@ if(isset($_POST['button'])){
             <img class="fixed-logo" src="../../resources/images/toilethub_logo.png" alt="">
             <form class="big-form" action="index.php" method="POST">
                 <h1 class="form-title">Register</h1>
-                <div class="error"><?php echo $error; ?></div>
+                <?php
+                    if ($error) {
+                        echo "<span class='error'>{$error}</span>";
+                    }
+                ?>
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username" required>
                 <label for="email">E-mail</label>

@@ -31,9 +31,9 @@ if($review->save()){
     ]);
     exit;
 } else {
-    json_ecode([
-        'error' => 'Something went wrong with your comment';
-    ])
+    json_encode([
+        'error' => 'Something went wrong with your comment'
+    ]);
     exit;
 }
 

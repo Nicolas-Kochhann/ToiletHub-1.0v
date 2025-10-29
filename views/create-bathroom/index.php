@@ -2,6 +2,7 @@
 
 require __DIR__."/../../vendor/autoload.php";
 
+use Src\Exceptions\Infrastructure\UploadException;
 use Src\Models\User;
 use Src\Models\Bathroom;
 use Src\Models\Uploader;
@@ -12,7 +13,7 @@ if (!isset($_SESSION["userId"])) {
     header("Location: ../account/login");
 }
 
-
+$error = '';
 
 if (isset($_POST['submit'])){
 
@@ -26,12 +27,19 @@ if (isset($_POST['submit'])){
     $bathroom = new Bathroom($description, $isPaid, $price, $lat, $lon, $loggedUser);
 
     if(isset($_FILES['images'])){
-        $bathroom->save();
-        $savedImages = Uploader::uploadImages($_FILES['images']);
-        Bathroom::saveImage($bathroom->getBathroomId(), $savedImages);
+        try{
+            $bathroom->save();
+            $savedImages = Uploader::uploadImages($_FILES['images']);
+            Bathroom::saveImage($bathroom->getBathroomId(), $savedImages);
+            
+        } catch(UploadException $e){
+            $error = $e->getMessage();
+        } catch(PDOException $e){
+            $error = 'Sorry, it seems that one of the parameters passed is invalid.';
+        }
         header("Location: ../list-bathrooms/");
     }else{
-        throw new UploadException("No images were uploaded.");
+        $error = "No images were uploaded.";
     }
 }
 
@@ -69,6 +77,11 @@ if (isset($_POST['submit'])){
 
             <div class="container-create-bathroom">
                 <form class="create-bathroom-form" action="index.php" method="POST" enctype="multipart/form-data">
+                    <?php
+                    if ($error) {
+                        echo "<span class='error'>{$error}</span>";
+                    }
+                    ?>
                     <label for="images" class="drop-container" id="dropcontainer">
                         <span class="drop-title">Drop images of the bathroom here</span>
                         or

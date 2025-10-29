@@ -5,6 +5,7 @@ require __DIR__."/../../vendor/autoload.php";
 use Src\Models\User;
 use Src\Models\Bathroom;
 use Src\Models\Uploader;
+use Src\Exceptions\Infrastructure\UploadException;
 
 session_start();
 
@@ -25,12 +26,19 @@ if (isset($_POST['submit'])){
     $bathroom->setBathroomId((int)$_GET['bathroomId']);
 
     if(isset($_FILES['images'])){
-        $bathroom->save();
-        $savedImages = Uploader::uploadImages($_FILES['images']);
-        Bathroom::saveImage($bathroom->getBathroomId(), $savedImages);
+        try{
+            $bathroom->save();
+            $savedImages = Uploader::uploadImages($_FILES['images']);
+            Bathroom::saveImage($bathroom->getBathroomId(), $savedImages);
+            
+        } catch(UploadException $e){
+            $error = $e->getMessage();
+        } catch(PDOException $e){
+            $error = 'Sorry, it seems that one of the parameters passed is invalid.';
+        }
         header("Location: ../list-bathrooms/");
     }else{
-        throw new UploadException("No images were uploaded.");
+        $error = "No images were uploaded.";
     }
 }
 

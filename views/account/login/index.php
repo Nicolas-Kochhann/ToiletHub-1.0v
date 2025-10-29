@@ -2,11 +2,13 @@
 require_once "../../../vendor/autoload.php";
 use Src\Models\User;
 
+$error = '';
+
 if(isset($_POST['button'])){
     if(User::authenticate($_POST['email'], $_POST['password'])){
         header("location: ../../list-bathrooms/index.php");
     }else{
-        header("location: index.php");
+        $error = "Invalid credentials!";
     }
 }
 ?>
@@ -26,6 +28,11 @@ if(isset($_POST['button'])){
             <img class="fixed-logo" src="../../resources/images/toilethub_logo.png" alt="">
             <form class="big-form" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
                 <h1 class="form-title">Log in</h1>
+                <?php
+                    if ($error) {
+                        echo "<span class='error'>{$error}</span>";
+                    }
+                ?>
                 <label for="email">E-mail</label>
                 <input type="email" name="email" id="email" required>
                 <label for="password">Password</label>

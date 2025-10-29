@@ -131,6 +131,16 @@ strong a {
   cursor: url(../resources/images/shiba_icon.ico), pointer;
 }
 
+.error {
+  padding: 5px 7px;
+  margin: 0 0 15px 0;
+  border: 1px solid rgb(150, 0, 0);
+  border-radius: 5px;
+  background-color: rgba(255, 0, 0, 0.386);
+  font-family: "DM Sans", sans-serif;
+  color: rgb(150, 0, 0);
+}
+
 @media (max-width: 1300px) {
   form.big-form{
     width: 50%;
