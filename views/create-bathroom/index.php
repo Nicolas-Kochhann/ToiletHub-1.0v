@@ -24,10 +24,15 @@ if (isset($_POST['submit'])){
     $loggedUser = User::find($_SESSION['userId']);
 
     $bathroom = new Bathroom($description, $isPaid, $price, $lat, $lon, $loggedUser);
-    $bathroom->save();
 
-    $savedImages = Uploader::uploadImages($_FILES['images']);
-    Bathroom::saveImage($bathroom->getBathroomId(), $savedImages);
+    if(isset($_FILES['images'])){
+        $bathroom->save();
+        $savedImages = Uploader::uploadImages($_FILES['images']);
+        Bathroom::saveImage($bathroom->getBathroomId(), $savedImages);
+        header("Location: ../list-bathrooms/");
+    }else{
+        throw new UploadException("No images were uploaded.");
+    }
 }
 
 ?>

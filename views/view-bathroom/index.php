@@ -1,7 +1,25 @@
 <?php
 
+require __DIR__."/../../vendor/autoload.php";
+
+use Src\Models\User;
+use Src\Models\Bathroom;
+use Src\Models\Review;
+
 session_start();
 
+if (!isset($_SESSION["userId"])) {
+    header("Location: ../account/login");
+}
+if(isset($_POST['submitComment'])){
+    $review = new Review($_POST['comment'], $_POST['bathroomId'], User::find($_POST['loggedUserId']));
+    $review->save();
+    $_GET['bathroomId'] = $_POST['bathroomId'];
+}
+
+$bathroom = Bathroom::find((int)$_GET['bathroomId']);
+$reviews = Review::listAll();
+$images = $bathroom->findBathroomImages($bathroom->getBathroomId());
 ?>
 
 <!DOCTYPE html>
@@ -44,53 +62,77 @@ session_start();
 
                 <div class="slideshow-container">
                     
-                    <div class="mySlides">
-                        <img src="../resources/images/placeholders/turkish-man.png" style="width:100%">
-                    </div>
-
-                    <div class="mySlides">
-                        <img src="../resources/images/placeholders/japanese-shitroom.png" style="width:100%">
-                    </div>
-
-                    <div class="mySlides">
-                        <img src="../resources/images/placeholders/brazilian-bathroom.png" style="width:100%">
-                    </div>
-                    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-                    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+                    <?php
+                    
+                    foreach($images as $image){
+                        echo '
+                            <div class="mySlides">
+                                <img src="../../resources/bathrooms/'.$image.'" style="width:100%">
+                            </div>  
+                        ';
+                    }
+                    if(count($images) > 1){
+                        echo '
+                            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+                        ';
+                    }
+                    ?>
+                    
                 </div>
 
                 <div class="data-container">
-                    <h1 class="bathroom-title">Cagatron 3000</h1>
+                    <h1 class="bathroom-title"><?= $bathroom->getDescription() ?></h1>
                     <hr>
                     <div class="container-paid-info">
-                        <p class="paid-text">Paid</p> <!-- Se for pago, classe unpaid-text e texto "Free" -->
-                        <p class="price-text">$3.00</p> <!-- Se for pago, coloca o preço, se não, não coloca o p -->
+                        <p class="<?= $bathroom->getIsPaid() ? "paid-text" : "unpaid-text" ?>"><?= $bathroom->getIsPaid() ? "Paid" : "Free"?></p> <!-- Se for pago, classe unpaid-text e texto "Free" -->
+                        <p class="price-text"><?= $bathroom->getIsPaid() ? "$" . $bathroom->getPrice() : "" ?></p> <!-- Se for pago, coloca o preço, se não, não coloca o p -->
                     </div>
                     <a href="">
                         <div class="maps-link">Go To Location (Maps)</div>
                     </a>
 
                     <!-- !!!!!!!!!!!!! OS DOIS BOTOES ABAIXO SO APARECEM SE FOR A PESSOA QUE CRIOU O BANHEIRO !!!!!!!!!!!!! -->
-
-                    <a href="">
-                        <div class="edit-bathroom">Edit Toilet</div>
-                    </a>
-                    <a href="">
-                        <div class="delete-bathroom">Delete Toilet</div>
-                    </a>
+                    <?php
+                        if($_SESSION['userId'] === $bathroom->getOwner()->getUserId()){
+                            echo '
+                                <a href="">
+                                    <div class="edit-bathroom">Edit Toilet</div>
+                                </a>
+                                <a href="">
+                                    <div class="delete-bathroom">Delete Toilet</div>
+                                </a>
+                            ';
+                        }
+                    ?>
+                    
 
                     <div class="comment-container">
                         <h2 class="comment-header">Comments</h2>
                         <div class="post-comment-container">
-                            <input type="text" id="bathroomId" value="<?= //Aqui vai o id do banheiro ?>">
-                            <input type="text" id="loggedUserId" value="<?= //Aqui vai o id do banheiro ?>"                            
-                            <input class="comment-input" type="text" name="comment" id="comment" placeholder="Add a comment...">
-                            <button disabled class="comment-submit" id="submitComment">Comment</button>
+                            <form action="index.php" method="post">
+                                <input type="text" id="bathroomId" name="bathroomId" value="<?= $bathroom->getBathroomId() ?>">
+                                <input type="text" id="loggedUserId" name="loggedUserId" value="<?= $_SESSION['userId'] ?>">                            
+                                <input class="comment-input" type="text" name="comment" id="comment" placeholder="Add a comment...">
+                                <button class="comment-submit" id="submitComment" name="submitComment">Comment</button>
+                            </form>
                         </div>
-                        <div class="posted-comment">
-                            <strong class="commenter">Cagador da Silva</strong>
-                            <p class="comment-body">Caguei aqui e foi uma delícia!</p>
-                        </div>
+
+                        <?php
+                        
+                        foreach($reviews as $review){
+                            if($review->getBathroomId() == $bathroom->getBathroomId()){
+                                echo '
+                                    <div class="posted-comment">
+                                        <strong class="commenter">'.$review->getUser()->getUsername().'</strong>
+                                        <p class="comment-body">'.$review->getComment().'</p>
+                                    </div>
+                                ';
+                            }
+                        }
+                        
+                        ?>
+                        
                     </div>
                 </div>
 
