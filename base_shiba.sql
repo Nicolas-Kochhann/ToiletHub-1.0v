@@ -29,7 +29,7 @@ CREATE TABLE reviews (
     comment TEXT NOT NULL,
     bathroomId INT NOT NULL,
     userId INT NOT NULL,
-    FOREIGN KEY (bathroomId) REFERENCES bathrooms(bathroomId),
+    FOREIGN KEY (bathroomId) REFERENCES bathrooms(bathroomId) ON DELETE CASCADE,
     FOREIGN KEY (userId) REFERENCES users(userId)
 );
 
@@ -37,5 +37,6 @@ CREATE TABLE reviews (
 CREATE TABLE bathrooms_images (
     id INT AUTO_INCREMENT PRIMARY KEY,
     image TEXT NOT NULL,
-    bathroomId INT NOT NULL
+    bathroomId INT NOT NULL,
+    FOREIGN KEY (bathroomId) REFERENCES bathrooms(bathroomId) ON DELETE CASCADE
 )

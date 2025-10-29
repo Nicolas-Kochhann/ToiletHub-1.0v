@@ -96,10 +96,10 @@ $images = $bathroom->findBathroomImages($bathroom->getBathroomId());
                     <?php
                         if($_SESSION['userId'] === $bathroom->getOwner()->getUserId()){
                             echo '
-                                <a href="">
+                                <a href="../edit-bathroom/?bathroomId='.$bathroom->getBathroomId().'">
                                     <div class="edit-bathroom">Edit Toilet</div>
                                 </a>
-                                <a href="">
+                                <a href="deleteBathroom.php?bathroomId='.$bathroom->getBathroomId().'">
                                     <div class="delete-bathroom">Delete Toilet</div>
                                 </a>
                             ';
