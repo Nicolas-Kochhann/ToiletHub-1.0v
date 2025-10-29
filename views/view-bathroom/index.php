@@ -69,6 +69,16 @@ session_start();
                     <a href="">
                         <div class="maps-link">Go To Location (Maps)</div>
                     </a>
+
+                    <!-- !!!!!!!!!!!!! OS DOIS BOTOES ABAIXO SO APARECEM SE FOR A PESSOA QUE CRIOU O BANHEIRO !!!!!!!!!!!!! -->
+
+                    <a href="">
+                        <div class="edit-bathroom">Edit Bathroom</div>
+                    </a>
+                    <a href="">
+                        <div class="delete-bathroom">Delete Bathroom</div>
+                    </a>
+
                     <div class="comment-container">
                         <h2 class="comment-header">Comments</h2>
                         <div class="post-comment-container">
