@@ -23,8 +23,10 @@ if (isset($_POST['submit'])){
     $loggedUser = User::find($_SESSION['userId']);
 
     $bathroom = new Bathroom($description, $isPaid, $price, $lat, $lon, $loggedUser);
+    $bathroom->save();
 
-    $bathroom->uploadImage($_FILES[]);
+    $savedImages = $bathroom->uploadImage($_FILES);
+    Bathroom::saveImage($bathroom->getBathroomId(), $savedImages);
 }
 
 ?>
@@ -38,6 +40,7 @@ if (isset($_POST['submit'])){
     <link rel="icon" href="../resources/images/shiba_icon.ico">
     <link rel="stylesheet" href="../styles/listStyle.css">
     <link rel="stylesheet" href="../styles/createBathroomStyle.css">
+    <script src="../scripts/geolocation.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -76,7 +79,7 @@ if (isset($_POST['submit'])){
                     <input class="latlon-input" type="text" name="lat" id="lat"><br>
                     <label for="lon">Longitude</label><br>
                     <input class="latlon-input" type="text" name="lon" id="lon"><br>
-                    <button type="button">Use Current Location</button>
+                    <button type="button" onclick="getLocation()">Use Current Location</button>
                     <button class="submit" name="submit">Create Bathroom</button>
                 </form>
             </div>
