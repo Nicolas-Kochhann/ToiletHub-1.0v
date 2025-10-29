@@ -8,9 +8,6 @@ use Src\Models\Review;
 
 session_start();
 
-if (!isset($_SESSION["userId"])) {
-    header("Location: ../account/login");
-}
 if(isset($_POST['submitComment'])){
     $review = new Review($_POST['comment'], $_POST['bathroomId'], User::find($_POST['loggedUserId']));
     $review->save();
@@ -31,6 +28,7 @@ $images = $bathroom->findBathroomImages($bathroom->getBathroomId());
     <link rel="icon" href="../resources/images/shiba_icon.ico">
     <link rel="stylesheet" href="../styles/listStyle.css">
     <link rel="preload" href="../resources/images/toilethub_logo.gif" as="image">
+    <script src="..\scripts\comment.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -107,10 +105,10 @@ $images = $bathroom->findBathroomImages($bathroom->getBathroomId());
                     ?>
                     
 
-                    <div class="comment-container">
+                    <div class="comment-container" id="comment-container">
                         <h2 class="comment-header">Comments</h2>
                         <div class="post-comment-container">
-                            <form action="index.php" method="post">
+                            <form method="post">
                                 <input type="text" id="bathroomId" name="bathroomId" value="<?= $bathroom->getBathroomId() ?>">
                                 <input type="text" id="loggedUserId" name="loggedUserId" value="<?= $_SESSION['userId'] ?>">                            
                                 <input class="comment-input" type="text" name="comment" id="comment" placeholder="Add a comment...">
