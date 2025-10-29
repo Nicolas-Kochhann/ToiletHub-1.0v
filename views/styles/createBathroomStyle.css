@@ -1,14 +1,17 @@
 .container-create-bathroom {
-  width: 100%;
+  width: fit-content;
   height: calc(100vh - 80px);
   display: flex;
+  flex-direction: column;
   flex: 1;
   align-items: center;
-  justify-content: center;
+  overflow-y: scroll;
+  padding: 10px 0 0 0;
 }
 
 .create-bathroom-form {
   padding: 20px;
+  margin: 0 0 10px 0;
   width: 50%;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 20px;

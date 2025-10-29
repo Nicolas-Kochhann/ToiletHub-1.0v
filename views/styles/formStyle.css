@@ -31,7 +31,7 @@ form.big-form {
   border-radius: 20px;
   display: flex;
   flex-direction: column;
-  width: 30%;
+  width: 40%;
   min-width: 350px;
 }
 
@@ -129,4 +129,44 @@ strong a {
 
 .fixed-logo:hover {
   cursor: url(../resources/images/shiba_icon.ico), pointer;
+}
+
+@media (max-width: 1300px) {
+  form.big-form{
+    width: 50%;
+  }
+
+  .fixed-logo{
+    width: 200px;
+  }
+}
+
+@media (max-width: 850px) {
+  form.big-form{
+    width: 70%;
+  }
+
+  .fixed-logo{
+    display: none;
+  }
+}
+
+@media (max-width: 500px) {
+  form.big-form{
+    width: 90%;
+  }
+
+  .fixed-logo{
+    display: none;
+  }
+}
+
+@media (max-width: 300px) {
+  form.big-form{
+    width: 90%;
+  }
+
+  .fixed-logo{
+    display: none;
+  }
 }
