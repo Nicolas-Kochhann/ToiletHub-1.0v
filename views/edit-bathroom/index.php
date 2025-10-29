@@ -1,6 +1,40 @@
 <?php
 
+require __DIR__."/../../vendor/autoload.php";
+
+use Src\Models\User;
+use Src\Models\Bathroom;
+use Src\Models\Uploader;
+
 session_start();
+
+if (!isset($_SESSION["userId"])) {
+    header("Location: ../account/login");
+}
+
+if (isset($_POST['submit'])){
+
+    $description = htmlspecialchars($_POST['description']);
+    $isPaid = (bool)htmlspecialchars($_POST['is-paid']);
+    $price = (int)htmlspecialchars($_POST['price']) ?? null;
+    $lat = htmlspecialchars($_POST['lat']);
+    $lon = htmlspecialchars($_POST['lon']);
+    $loggedUser = User::find($_SESSION['userId']);
+
+    $bathroom = new Bathroom($description, $isPaid, $price, $lat, $lon, $loggedUser);
+    $bathroom->setBathroomId((int)$_GET['bathroomId']);
+
+    if(isset($_FILES['images'])){
+        $bathroom->save();
+        $savedImages = Uploader::uploadImages($_FILES['images']);
+        Bathroom::saveImage($bathroom->getBathroomId(), $savedImages);
+        header("Location: ../list-bathrooms/");
+    }else{
+        throw new UploadException("No images were uploaded.");
+    }
+}
+
+$bathroom = Bathroom::find((int)$_GET['bathroomId']);
 
 ?>
 
@@ -13,48 +47,47 @@ session_start();
     <link rel="icon" href="../resources/images/shiba_icon.ico">
     <link rel="stylesheet" href="../styles/listStyle.css">
     <link rel="stylesheet" href="../styles/createBathroomStyle.css">
+    <script src="../scripts/geolocation.js" defer></script>
 </head>
 <body>
     <div class="container">
 
         <header>
             <div class="logo-container"></div>
-            <a class='link-create-bathroom' href='../list-bathrooms/'>< Go Back</a>
+                    <a class='link-create-bathroom' href='../list-bathrooms/'>< Go Back</a>
             <div class="profile-container">
             <?php
-                if(isset($_SESSION['userId'])){
-                    $profilePicture = $_SESSION['profilePicture'] ?? '../resources/images/pfp-default.svg';
-
-                    echo "<a class='link-profile' href=''>
-                    <img class='image-profile' src='{$profilePicture}' alt='pfp'>
-                    </a>";
-                }    
-            ?>      
+            $profilePicture = $_SESSION['profilePicture'] ?? '../resources/images/pfp-default.svg';
+        
+            echo "<a class='link-profile' href=''>
+                <img class='image-profile' src='{$profilePicture}' alt='pfp'>
+                </a>";
+            ?>   
             </div>
         </header>
 
         <main class="form-container">
 
             <div class="container-create-bathroom">
-                <form class="create-bathroom-form" action="index.php" method="POST" enctype="multipart/form-data">
+                <form class="create-bathroom-form" action="index.php?bathroomId=<?=$bathroom->getBathroomId()?>" method="POST" enctype="multipart/form-data">
                     <label for="images" class="drop-container" id="dropcontainer">
                         <span class="drop-title">Drop images of the bathroom here</span>
                         or
-                        <input type="file" id="images" accept="image/*" multiple required>
+                        <input type="file" id="images" name="images[]" accept="image/*" multiple required>
                     </label>
                     <label for="description">Description</label>
-                    <input class="create-bathroom-input" type="text" name="description" id="description">
+                    <input class="create-bathroom-input" type="text" name="description" id="description" value="<?= $bathroom->getDescription()?>">
                     <div class="container-fields">
                         <input type="checkbox" name="is-paid" id="isPaid">
                         <label for="isPaid">Is it paid?</label>
-                        <input class="bathroom-price-input" type="number" name="price" id="price" placeholder="How much?">
+                        <input class="bathroom-price-input" type="number" name="price" id="price" placeholder="How much?" value="<?= $bathroom->getPrice() ?>">
                     </div>
                     <label for="lat">Latitude</label><br>
-                    <input class="latlon-input" type="text" name="lat" id="lat"><br>
+                    <input class="latlon-input" type="text" name="lat" id="lat" value="<?= $bathroom->getLat()?>"><br>
                     <label for="lon">Longitude</label><br>
-                    <input class="latlon-input" type="text" name="lon" id="lon"><br>
-                    <button type="button">Use Current Location</button>
-                    <button class="submit" name="submit">Edit Bathroom</button>
+                    <input class="latlon-input" type="text" name="lon" id="lon" value="<?= $bathroom->getLon()?>"><br>
+                    <button type="button" onclick="getLocation()">Use Current Location</button>
+                    <button class="submit" name="submit">Create Bathroom</button>
                 </form>
             </div>
 
