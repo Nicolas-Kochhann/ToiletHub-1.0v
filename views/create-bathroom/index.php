@@ -2,7 +2,6 @@
 
 require __DIR__."/../../vendor/autoload.php";
 
-use BcMath\Number;
 use Src\Models\User;
 use Src\Models\Bathroom;
 
@@ -12,16 +11,20 @@ if (!isset($_SESSION["userId"])) {
     header("Location: ../account/login");
 }
 
-$loggedUser = User::find($_SESSION['userId']);
+
 
 if (isset($_POST['submit'])){
+
     $description = htmlspecialchars($_POST['description']);
-    $isPaid = htmlspecialchars($_POST['is-paid']);
+    $isPaid = (bool)htmlspecialchars($_POST['is-paid']);
     $price = (int)htmlspecialchars($_POST['price']) ?? null;
     $lat = htmlspecialchars($_POST['lat']);
     $lon = htmlspecialchars($_POST['lon']);
+    $loggedUser = User::find($_SESSION['userId']);
 
-    $bathroom = new Bathroom();
+    $bathroom = new Bathroom($description, $isPaid, $price, $lat, $lon, $loggedUser);
+
+    $bathroom->uploadImage($_FILES[]);
 }
 
 ?>

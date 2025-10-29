@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Exceptions\Domain;
+namespace Src\Exceptions\Infrastructure;
 use RuntimeException;
 use Throwable;
 

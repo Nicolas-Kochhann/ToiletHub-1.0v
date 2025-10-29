@@ -4,6 +4,7 @@ namespace Src\Models;
 
 use Src\Database\MySQL;
 use Src\Interfaces\ActiveRecord;
+use Src\Exceptions\Infrastructure\UploadException;
 use Src\Exceptions\Domain\BathroomNotFoundException;
 
 class Bathroom implements ActiveRecord{
@@ -148,31 +149,41 @@ class Bathroom implements ActiveRecord{
         return $bathrooms;
     }
 
-    public function uploadImage() : array{
+    public function uploadImage($files) : array{
 
-        $dir = "/../../resources/bathrooms/";
+        $dir = __DIR__."/../../resources/bathrooms/";
 
-        if(mkdir($dir . $this->bathroomId)){
-            foreach($_FILES['images'] as $i){
-                $archName = $i['name'];
-                $info_name = explode("." , $archName);
-                $ext = end($info_name);
-                $newName = uniqid().".".$ext;
+        if(!is_dir($dir . $this->bathroomId)){
+            if(mkdir($dir . $this->bathroomId, 0777, true)){
 
                 $imageNames = [];
 
-                if(move_uploaded_file($i['tmp_name'], $dir.$newName)){
-                    $imageNames[] = $newName;
-                    echo "Upload realizado com sucesso.";
-                }else{
-                    echo "Upload não foi realizado.";
+                foreach($files['tmp_name'] as $i => $tmpName){
+                    
+                    // Garante que o arquivo seja uma imagem válida
+                    $type = mime_content_type($tmpName);
+                    if (!in_array($type, ['image/jpeg', 'image/png', 'image/webp'])) {
+                        throw new UploadException("Tipo de arquivo inválido: {$files['name'][$i]}");
+                    }
+
+                    $archName = $files['name'][$i];
+                    $info_name = explode("." , $archName);
+                    $ext = end($info_name);
+                    $newName = uniqid().".".$ext;
+
+
+                    if(move_uploaded_file($i['tmp_name'], $dir . $newName)){
+                        $imageNames[] = $newName;
+                        echo "Upload realizado com sucesso.";
+                    }else{
+                        throw new UploadException('The file could not be uploaded.');
+                    }
                 }
-            }
-            return $imageNames;
-        }else{
-            throw new UploadException();
+            }else{
+                throw new UploadException('The file could not be uploaded.');
+            } 
         }
-        
+        return $imageNames;   
     }
 
     public function getBathroomId(): int{
