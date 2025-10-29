@@ -59,8 +59,30 @@ session_start();
                     <a class="next" onclick="plusSlides(1)">&#10095;</a>
                 </div>
 
-            </div>
+                <div class="data-container">
+                    <h1 class="bathroom-title">Cagatron 3000</h1>
+                    <hr>
+                    <div class="container-paid-info">
+                        <p class="paid-text">Paid</p> <!-- Se for pago, classe unpaid-text e texto "Free" -->
+                        <p class="price-text">$3.00</p> <!-- Se for pago, coloca o preço, se não, não coloca o p -->
+                    </div>
+                    <a href="">
+                        <div class="maps-link">Go To Location (Maps)</div>
+                    </a>
+                    <div class="comment-container">
+                        <h2 class="comment-header">Comments</h2>
+                        <div class="post-comment-container">
+                            <input class="comment-input" type="text" name="comment" id="comment" placeholder="Add a comment...">
+                            <button disabled class="comment-submit" id="submitComment">Comment</button>
+                        </div>
+                        <div class="posted-comment">
+                            <strong class="commenter">Cagador da Silva</strong>
+                            <p class="comment-body">Caguei aqui e foi uma delícia!</p>
+                        </div>
+                    </div>
+                </div>
 
+            </div>
         </main>
 
     </div>
@@ -70,29 +92,31 @@ session_start();
 
         // Next/previous controls
         function plusSlides(n) {
-        showSlides(slideIndex += n);
+            showSlides(slideIndex += n);
         }
 
         // Thumbnail image controls
         function currentSlide(n) {
-        showSlides(slideIndex = n);
+            showSlides(slideIndex = n);
         }
 
         function showSlides(n) {
-        let i;
-        let slides = document.getElementsByClassName("mySlides");
-        let dots = document.getElementsByClassName("dot");
-        if (n > slides.length) {slideIndex = 1}
-        if (n < 1) {slideIndex = slides.length}
-        for (i = 0; i < slides.length; i++) {
-            slides[i].style.display = "none";
-        }
-        for (i = 0; i < dots.length; i++) {
-            dots[i].className = dots[i].className.replace(" active", "");
-        }
-        slides[slideIndex-1].style.display = "block";
-        dots[slideIndex-1].className += " active";
+            let i;
+            let slides = document.getElementsByClassName("mySlides");
+            if (n > slides.length) {slideIndex = 1}
+            if (n < 1) {slideIndex = slides.length}
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slides[slideIndex-1].style.display = "block";
         } 
+
+        const buttonComment = document.getElementById("submitComment");
+        const commentField = document.getElementById("comment");
+
+        commentField.addEventListener("input", () => {
+            buttonComment.disabled = commentField.value.trim() === "";
+        })
     </script>
 </body>
 </html>
