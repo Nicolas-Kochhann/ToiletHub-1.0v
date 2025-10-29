@@ -90,6 +90,7 @@ class Bathroom implements ActiveRecord{
                 'lon' => $this->lon,
                 'ownerId' => $this->owner->getUserId()
             ]);
+            $this->bathroomId = (int)$conn->lastInsertId();
         }
         return $result;
     }
