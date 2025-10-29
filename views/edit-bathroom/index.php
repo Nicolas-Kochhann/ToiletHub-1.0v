@@ -1,31 +1,6 @@
 <?php
 
-require __DIR__."/../../vendor/autoload.php";
-
-use Src\Models\User;
-use Src\Models\Bathroom;
-
 session_start();
-
-if (!isset($_SESSION["userId"])) {
-    header("Location: ../account/login");
-}
-
-
-
-if (isset($_POST['submit'])){
-
-    $description = htmlspecialchars($_POST['description']);
-    $isPaid = (bool)htmlspecialchars($_POST['is-paid']);
-    $price = (int)htmlspecialchars($_POST['price']) ?? null;
-    $lat = htmlspecialchars($_POST['lat']);
-    $lon = htmlspecialchars($_POST['lon']);
-    $loggedUser = User::find($_SESSION['userId']);
-
-    $bathroom = new Bathroom($description, $isPaid, $price, $lat, $lon, $loggedUser);
-
-    $bathroom->uploadImage($_FILES[]);
-}
 
 ?>
 
@@ -44,15 +19,17 @@ if (isset($_POST['submit'])){
 
         <header>
             <div class="logo-container"></div>
-                    <a class='link-create-bathroom' href='../list-bathrooms/'>< Go Back</a>
+            <a class='link-create-bathroom' href='../list-bathrooms/'>< Go Back</a>
             <div class="profile-container">
             <?php
-            $profilePicture = $_SESSION['profilePicture'] ?? '../resources/images/pfp-default.svg';
-        
-            echo "<a class='link-profile' href=''>
-                <img class='image-profile' src='{$profilePicture}' alt='pfp'>
-                </a>";
-            ?>   
+                if(isset($_SESSION['userId'])){
+                    $profilePicture = $_SESSION['profilePicture'] ?? '../resources/images/pfp-default.svg';
+
+                    echo "<a class='link-profile' href=''>
+                    <img class='image-profile' src='{$profilePicture}' alt='pfp'>
+                    </a>";
+                }    
+            ?>      
             </div>
         </header>
 
@@ -77,7 +54,7 @@ if (isset($_POST['submit'])){
                     <label for="lon">Longitude</label><br>
                     <input class="latlon-input" type="text" name="lon" id="lon"><br>
                     <button type="button">Use Current Location</button>
-                    <button class="submit" name="submit">Create Bathroom</button>
+                    <button class="submit" name="submit">Edit Bathroom</button>
                 </form>
             </div>
 
