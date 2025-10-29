@@ -73,15 +73,17 @@ session_start();
                     <!-- !!!!!!!!!!!!! OS DOIS BOTOES ABAIXO SO APARECEM SE FOR A PESSOA QUE CRIOU O BANHEIRO !!!!!!!!!!!!! -->
 
                     <a href="">
-                        <div class="edit-bathroom">Edit Bathroom</div>
+                        <div class="edit-bathroom">Edit Toilet</div>
                     </a>
                     <a href="">
-                        <div class="delete-bathroom">Delete Bathroom</div>
+                        <div class="delete-bathroom">Delete Toilet</div>
                     </a>
 
                     <div class="comment-container">
                         <h2 class="comment-header">Comments</h2>
                         <div class="post-comment-container">
+                            <input type="text" id="bathroomId" value="<?= //Aqui vai o id do banheiro ?>">
+                            <input type="text" id="loggedUserId" value="<?= //Aqui vai o id do banheiro ?>"                            
                             <input class="comment-input" type="text" name="comment" id="comment" placeholder="Add a comment...">
                             <button disabled class="comment-submit" id="submitComment">Comment</button>
                         </div>

@@ -4,6 +4,7 @@ require __DIR__."/../../vendor/autoload.php";
 
 use Src\Models\User;
 use Src\Models\Bathroom;
+use Src\Models\Uploader;
 
 session_start();
 
@@ -25,7 +26,7 @@ if (isset($_POST['submit'])){
     $bathroom = new Bathroom($description, $isPaid, $price, $lat, $lon, $loggedUser);
     $bathroom->save();
 
-    $savedImages = $bathroom->uploadImage($_FILES);
+    $savedImages = Uploader::uploadImages($_FILES['images']);
     Bathroom::saveImage($bathroom->getBathroomId(), $savedImages);
 }
 
@@ -66,7 +67,7 @@ if (isset($_POST['submit'])){
                     <label for="images" class="drop-container" id="dropcontainer">
                         <span class="drop-title">Drop images of the bathroom here</span>
                         or
-                        <input type="file" id="images" accept="image/*" multiple required>
+                        <input type="file" id="images" name="images[]" accept="image/*" multiple required>
                     </label>
                     <label for="description">Description</label>
                     <input class="create-bathroom-input" type="text" name="description" id="description">

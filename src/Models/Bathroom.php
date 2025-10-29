@@ -150,43 +150,6 @@ class Bathroom implements ActiveRecord{
         return $bathrooms;
     }
 
-    public function uploadImage($files) : array{
-
-        $dir = __DIR__."/../../resources/bathrooms/";
-
-        if(!is_dir($dir . $this->bathroomId)){
-            if(mkdir($dir . $this->bathroomId, 0777, true)){
-
-                $imageNames = [];
-
-                foreach($files['tmp_name'] as $i => $tmpName){
-                    
-                    // Garante que o arquivo seja uma imagem válida
-                    $type = mime_content_type($tmpName);
-                    if (!in_array($type, ['image/jpeg', 'image/png', 'image/webp'])) {
-                        throw new UploadException("Tipo de arquivo inválido: {$files['name'][$i]}");
-                    }
-
-                    $archName = $files['name'][$i];
-                    $info_name = explode("." , $archName);
-                    $ext = end($info_name);
-                    $newName = uniqid().".".$ext;
-
-
-                    if(move_uploaded_file($i['tmp_name'], $dir . $newName)){
-                        $imageNames[] = $newName;
-                        echo "Upload realizado com sucesso.";
-                    }else{
-                        throw new UploadException('The file could not be uploaded.');
-                    }
-                }
-            }else{
-                throw new UploadException('The file could not be uploaded.');
-            } 
-        }
-        return $imageNames;   
-    }
-
     public function getBathroomId(): int{
         return $this->bathroomId;
     }

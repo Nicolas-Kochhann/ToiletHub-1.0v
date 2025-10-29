@@ -54,7 +54,7 @@ $bathrooms = Bathroom::listAll();
                     foreach($bathrooms as $bathroom){
                         $images = Bathroom::findBathroomImages($bathroom->getBathroomId());
                         echo "<a href='../view-bathroom/index.php?bathroomId={$bathroom->getBathroomId()}' class='bathroom-card-container'>
-                                <img src='../../resources/bathrooms/{$bathroom->getBathroomId()}/{$images[0]}' alt='' class='bathroom-card-image'>
+                                <img src='../../resources/bathrooms/{$images[0]}' alt='' class='bathroom-card-image'>
                                 <span class='bathroom-text-container'>
                                     <strong>{$bathroom->getDescription()}</strong>
                                 </span>
