@@ -108,7 +108,7 @@ $images = $bathroom->findBathroomImages($bathroom->getBathroomId());
                                         <form action="index.php" method="post">
                                         <input hidden type="text" id="bathroomId" name="bathroomId" value="'. $bathroom->getBathroomId() .'">
                                         <input hidden type="text" id="loggedUserId" name="loggedUserId" value="'. $_SESSION['userId'] .'">                            
-                                        <input class="comment-input" type="text" name="comment" id="comment" placeholder="Add a comment...">
+                                        <input class="comment-input" type="text" name="comment" id="comment" placeholder="Add a comment..." required>
                                         <button class="comment-submit" id="submitComment" name="submitComment">Comment</button>
                                     </form>
                                 </div>';
