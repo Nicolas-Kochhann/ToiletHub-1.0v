@@ -41,7 +41,7 @@ if (isset($_POST['submit'])){
             $savedImages = Uploader::uploadImages($_FILES['images']);
             Bathroom::saveImage($bathroom->getBathroomId(), $savedImages);
 
-            header("Location: ../list-bathrooms/");header("Location: ../list-bathrooms/");
+            header("Location: ../list-bathrooms/");
             
         } catch(UploadException $e){
             $error = $e->getMessage();

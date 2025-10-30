@@ -28,28 +28,22 @@ $images = $bathroom->findBathroomImages($bathroom->getBathroomId());
     <link rel="icon" href="../resources/images/shiba_icon.ico">
     <link rel="stylesheet" href="../styles/listStyle.css">
     <link rel="preload" href="../resources/images/toilethub_logo.gif" as="image">
-    <script src="..\scripts\comment.js" defer></script>
 </head>
 <body>
     <div class="container">
 
         <header>
             <div class="logo-container"></div>
-            <?php
-
-                if (isset($_SESSION["userId"])) {
-                    echo "<a class='link-create-bathroom' href='../list-bathrooms'>< Go Back</a>";
-                } else {
-                    header("Location: ../account/login");
-                }
-
-            ?>
+                <a class='link-create-bathroom' href='../list-bathrooms'>< Go Back</a>";
             <div class="profile-container">
             <?php
             if(isset($_SESSION['userId'])){
-                echo '<a class="link-profile" href="">
-                <img class="image-profile" src="../resources/images/pfp-default.svg" alt="pfp">
-                </a>';
+                $profilePicture = $_SESSION['profilePicture'] ? "../../resources/users/{$_SESSION['profilePicture']}" : '../resources/images/pfp-default.svg';
+
+                echo "<a class='link-profile' href=''>
+                <img class='image-profile' src='{$profilePicture}' alt='pfp'>
+                </a>";
+
             }    
             ?>      
             </div>
@@ -107,14 +101,21 @@ $images = $bathroom->findBathroomImages($bathroom->getBathroomId());
 
                     <div class="comment-container" id="comment-container">
                         <h2 class="comment-header">Comments</h2>
-                        <div class="post-comment-container">
-                            <form method="post">
-                                <input hidden type="text" id="bathroomId" name="bathroomId" value="<?= $bathroom->getBathroomId() ?>">
-                                <input hidden type="text" id="loggedUserId" name="loggedUserId" value="<?= $_SESSION['userId'] ?>">                            
-                                <input class="comment-input" type="text" name="comment" id="comment" placeholder="Add a comment...">
-                                <button class="comment-submit" id="submitComment" name="submitComment">Comment</button>
-                            </form>
-                        </div>
+                        <?php
+
+                        if(isset($_SESSION['userId'])){
+                            echo '<div class="post-comment-container">
+                                        <form action="index.php" method="post">
+                                        <input hidden type="text" id="bathroomId" name="bathroomId" value="'. $bathroom->getBathroomId() .'">
+                                        <input hidden type="text" id="loggedUserId" name="loggedUserId" value="'. $_SESSION['userId'] .'">                            
+                                        <input class="comment-input" type="text" name="comment" id="comment" placeholder="Add a comment...">
+                                        <button class="comment-submit" id="submitComment" name="submitComment">Comment</button>
+                                    </form>
+                                </div>';
+                        }
+
+                        ?>
+                        
 
                         <?php
                         

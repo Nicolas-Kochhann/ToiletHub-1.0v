@@ -157,4 +157,12 @@ class User implements ActiveRecord{
         $this->password = $password;
     }
 
+    public function setUsername(string $username): void{
+        $this->username = $username;
+    }
+
+    public function setEmail(string $email): void{
+        $this->email = $email;
+    }
+
 }

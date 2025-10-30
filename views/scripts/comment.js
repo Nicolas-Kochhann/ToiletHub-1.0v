@@ -1,3 +1,5 @@
+/*
+
 document.getElementById('submitComment').addEventListener("click", function(event) {
         event.preventDefault();
 
@@ -25,3 +27,5 @@ document.getElementById('submitComment').addEventListener("click", function(even
             alert('Sorry! Something went wrong');
         });
 });
+
+*/

@@ -64,11 +64,14 @@ if (isset($_POST['submit'])){
                     <a class='link-create-bathroom' href='../list-bathrooms/'>< Go Back</a>
             <div class="profile-container">
             <?php
-            $profilePicture = $_SESSION['profilePicture'] ?? '../resources/images/pfp-default.svg';
-        
-            echo "<a class='link-profile' href=''>
+            if(isset($_SESSION['userId'])){
+                $profilePicture = $_SESSION['profilePicture'] ? "../../resources/users/{$_SESSION['profilePicture']}" : '../resources/images/pfp-default.svg';
+
+                echo "<a class='link-profile' href=''>
                 <img class='image-profile' src='{$profilePicture}' alt='pfp'>
                 </a>";
+
+            }    
             ?>   
             </div>
         </header>

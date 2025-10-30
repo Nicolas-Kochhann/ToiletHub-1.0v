@@ -37,9 +37,9 @@ $bathrooms = Bathroom::listAll();
             <div class="profile-container">
             <?php
             if(isset($_SESSION['userId'])){
-                $profilePicture = $_SESSION['profilePicture'] ?? '../resources/images/pfp-default.svg';
+                $profilePicture = $_SESSION['profilePicture'] ? "../../resources/users/{$_SESSION['profilePicture']}" : '../resources/images/pfp-default.svg';
 
-                echo "<a class='link-profile' href=''>
+                echo "<a class='link-profile' href='../account/edit/'>
                 <img class='image-profile' src='{$profilePicture}' alt='pfp'>
                 </a>";
 
