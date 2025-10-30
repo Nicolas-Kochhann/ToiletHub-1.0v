@@ -1,4 +1,12 @@
 .container-create-bathroom {
+  width: 100%;
+  height: calc(100vh - 80px);
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  
+  /*
   width: fit-content;
   height: calc(100vh - 80px);
   display: flex;
@@ -7,6 +15,7 @@
   align-items: center;
   overflow-y: scroll;
   padding: 10px 0 0 0;
+  */
 }
 
 .create-bathroom-form {

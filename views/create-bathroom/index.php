@@ -39,7 +39,7 @@ if (isset($_POST['submit'])){
         }
         header("Location: ../list-bathrooms/");
     }else{
-        $error = "No images were uploaded.";
+        $error = "No images were uploaded. You need to upload at least one picture.";
     }
 }
 

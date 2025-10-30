@@ -46,20 +46,29 @@ if(isset($_POST['button'])){
     <div class="container">
 
         <header>
-            <img src="" alt="logo">
+            <div class="logo-container"></div>
             <?php
 
-                if (isset($_SESSION["userId"])) {
-                    echo "<a class='link-create-bathroom' href=''>+ Create Bathroom</a>";
-                } else {
-                    echo "<a class='link-create-bathroom' href='../account/login'>+ Log in or Create Account</a>";
-                }
+            if (isset($_SESSION["userId"])) {
+                echo "<a class='link-create-bathroom' href='../../list-bathrooms'>< Go Back</a>";
+            } else {
+                header("Location: ../login");
+            }
 
             ?>
             <div class="profile-container">
-                <a class="link-profile" href="">
-                    <img class="image-profile" src="../../resources/images/pfp-default.svg" alt="pfp">
-                </a>
+            <?php
+            
+            if(isset($_SESSION['userId'])){
+                $profilePicture = $_SESSION['profilePicture'] ?? '../../resources/images/pfp-default.svg';
+
+                echo "<a class='link-profile' href=''>
+                <img class='image-profile' src='{$profilePicture}' alt='pfp'>
+                </a>";
+
+            }
+
+            ?> 
             </div>
         </header>
 
@@ -75,7 +84,6 @@ if(isset($_POST['button'])){
                     <label for="email">E-mail</label>
                     <input type="email" name="email" id="email" required>
                     <button class="submit" name="button">Save Changes</button>
-                    <p>Already have an account? <strong><a href="../login/">Log in</a></strong></p>
                 </form>
             </div>
         </main>

@@ -12,18 +12,18 @@ class Uploader{
         $imageNames = [];
 
         foreach ($files['tmp_name'] as $i => $tmpName) {
-            // Verifica se o upload foi feito corretamente
+            // Verify if have a upload error
             if ($files['error'][$i] !== UPLOAD_ERR_OK) {
-                throw new UploadException("Erro no upload de {$files['name'][$i]}");
+                throw new UploadException("Failed to upload: {$files['name'][$i]}");
             }
 
-            // Verifica o tipo de arquivo
+            // Verify the archive type
             $type = mime_content_type($tmpName);
             if (!in_array($type, ['image/jpeg', 'image/png', 'image/webp'])) {
                 throw new UploadException("Invalid file extension: {$files['name'][$i]}");
             }
 
-            // Cria nome único e move o arquivo
+            // Create a unique name and move the file.
             $info = pathinfo($files['name'][$i]);
             $ext = strtolower($info['extension']);
             $newName = uniqid('img_', true) . '.' . $ext;
@@ -35,6 +35,22 @@ class Uploader{
             }
         }
         return $imageNames;
+    }
+
+    public static function deleteImages(array $files): void {
+
+        $dir = __DIR__ . "/../../resources/bathrooms/";
+
+        foreach ($files as $file) {
+            
+            $filePath = $dir . (string)$file;
+
+            // Delete the image
+            if (is_file($filePath)) {
+                unlink($filePath);
+            }
+
+        }
     }
 
 }

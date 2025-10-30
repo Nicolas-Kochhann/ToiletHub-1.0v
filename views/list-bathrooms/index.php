@@ -33,6 +33,7 @@ $bathrooms = Bathroom::listAll();
                 }
 
             ?>
+
             <div class="profile-container">
             <?php
             if(isset($_SESSION['userId'])){
@@ -41,6 +42,7 @@ $bathrooms = Bathroom::listAll();
                 echo "<a class='link-profile' href=''>
                 <img class='image-profile' src='{$profilePicture}' alt='pfp'>
                 </a>";
+
             }    
             ?>      
             </div>

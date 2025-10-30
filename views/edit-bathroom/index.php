@@ -1,5 +1,11 @@
 <?php
 
+// Mostra todos os erros na tela
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
 require __DIR__."/../../vendor/autoload.php";
 
 use Src\Models\User;
@@ -25,20 +31,31 @@ if (isset($_POST['submit'])){
     $bathroom = new Bathroom($description, $isPaid, $price, $lat, $lon, $loggedUser);
     $bathroom->setBathroomId((int)$_GET['bathroomId']);
 
-    if(isset($_FILES['images'])){
+    if(!empty($_FILES['images']['tmp_name'][0])){
         try{
             $bathroom->save();
+            $images = Bathroom::findBathroomImages($bathroom->getBathroomId());
+            Uploader::deleteImages($images);
+            Bathroom::deleteImage($bathroom->getBathroomId(), $images);
+
             $savedImages = Uploader::uploadImages($_FILES['images']);
             Bathroom::saveImage($bathroom->getBathroomId(), $savedImages);
+
+            header("Location: ../list-bathrooms/");header("Location: ../list-bathrooms/");
             
         } catch(UploadException $e){
             $error = $e->getMessage();
         } catch(PDOException $e){
             $error = 'Sorry, it seems that one of the parameters passed is invalid.';
         }
-        header("Location: ../list-bathrooms/");
+        
     }else{
-        $error = "No images were uploaded.";
+        try{
+            $bathroom->save();
+            header("Location: ../list-bathrooms/");
+        } catch (PDOException $e){
+            $error = 'Sorry, it seems that one of the parameters passed is invalid.';
+        }
     }
 }
 
@@ -79,9 +96,8 @@ $bathroom = Bathroom::find((int)$_GET['bathroomId']);
             <div class="container-create-bathroom">
                 <form class="create-bathroom-form" action="index.php?bathroomId=<?=$bathroom->getBathroomId()?>" method="POST" enctype="multipart/form-data">
                     <label for="images" class="drop-container" id="dropcontainer">
-                        <span class="drop-title">Drop images of the bathroom here</span>
-                        or
-                        <input type="file" id="images" name="images[]" accept="image/*" multiple required>
+                        <span class="drop-title">Drop the new images here</span>*This will replace the previous ones
+                        <input type="file" id="images" name="images[]" accept="image/*" multiple>
                     </label>
                     <label for="description">Description</label>
                     <input class="create-bathroom-input" type="text" name="description" id="description" value="<?= $bathroom->getDescription()?>">
@@ -95,7 +111,7 @@ $bathroom = Bathroom::find((int)$_GET['bathroomId']);
                     <label for="lon">Longitude</label><br>
                     <input class="latlon-input" type="text" name="lon" id="lon" value="<?= $bathroom->getLon()?>"><br>
                     <button type="button" onclick="getLocation()">Use Current Location</button>
-                    <button class="submit" name="submit">Create Bathroom</button>
+                    <button class="submit" name="submit">Save Changes</button>
                 </form>
             </div>
 

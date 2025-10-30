@@ -56,14 +56,16 @@ class Bathroom implements ActiveRecord{
         return $images;
     }
 
-    public static function deleteImage(int $bathroomId, string $image): void{
+    public static function deleteImage(int $bathroomId, array $images): void{
         $conn = MySQL::connect();
         $sql = 'DELETE FROM bathrooms_images WHERE image=:image AND bathroomId=:bathroomId';
         $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            'image' => $image,
-            'bathroomId' => $bathroomId
-        ]);
+        foreach($images as $image){
+            $stmt->execute([
+                'image' => $image,
+                'bathroomId' => $bathroomId
+            ]);
+        }
     }
 
     public function save(): bool{
