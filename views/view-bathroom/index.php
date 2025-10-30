@@ -63,11 +63,11 @@ $images = $bathroom->findBathroomImages($bathroom->getBathroomId());
                     <?php
                     
                     foreach($images as $image){
-                        echo '
-                            <div class="mySlides">
-                                <img src="../../resources/bathrooms/'.$image.'" style="width:100%">
+                        echo "
+                            <div class='mySlides'>
+                                <img src='../../resources/bathrooms/{$image}' style='width:100%'>
                             </div>  
-                        ';
+                        ";
                     }
                     if(count($images) > 1){
                         echo '
@@ -109,8 +109,8 @@ $images = $bathroom->findBathroomImages($bathroom->getBathroomId());
                         <h2 class="comment-header">Comments</h2>
                         <div class="post-comment-container">
                             <form method="post">
-                                <input type="text" id="bathroomId" name="bathroomId" value="<?= $bathroom->getBathroomId() ?>">
-                                <input type="text" id="loggedUserId" name="loggedUserId" value="<?= $_SESSION['userId'] ?>">                            
+                                <input hidden type="text" id="bathroomId" name="bathroomId" value="<?= $bathroom->getBathroomId() ?>">
+                                <input hidden type="text" id="loggedUserId" name="loggedUserId" value="<?= $_SESSION['userId'] ?>">                            
                                 <input class="comment-input" type="text" name="comment" id="comment" placeholder="Add a comment...">
                                 <button class="comment-submit" id="submitComment" name="submitComment">Comment</button>
                             </form>
