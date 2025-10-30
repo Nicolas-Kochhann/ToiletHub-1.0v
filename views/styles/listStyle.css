@@ -159,6 +159,10 @@ img {
   filter: drop-shadow(0 0 10px #0000009d);
 }
 
+#image {
+  margin-bottom: 10px;
+}
+
 /* Next & previous buttons */
 .prev,
 .next {
@@ -324,6 +328,26 @@ a {
 .comment-submit:hover {
   background-color: #00000082;
   cursor: pointer;
+}
+
+.logout-button {
+  margin: 0 auto;
+  background-color: #ffc4c4;
+  padding: 15px 25px;
+  color: #e64040;
+  border: 2px solid #e64040;
+  border-radius: 2ch;
+  text-decoration: none;
+  font-size: 1.1rem;
+  margin: 0 0 0 auto;
+}
+
+.current-pfp {
+  width: 20%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 100vh;
+  margin: 0 auto 20px auto;
 }
 
 @media (max-width: 1300px) {

@@ -42,6 +42,7 @@ if(isset($_POST['button'])){
     <title>ToiletHub</title>
     <link rel="icon" href="../resources/images/shiba_icon.ico">
     <link rel="stylesheet" href="../../styles/listStyle.css">
+    <link rel="stylesheet" href="../../styles/createBathroomStyle.css">
 </head>
 <body>
     <div class="container">
@@ -57,34 +58,20 @@ if(isset($_POST['button'])){
             }
 
             ?>
-            <div class="profile-container">
-            <?php
-            
-            if(isset($_SESSION['userId'])){
-                $profilePicture = $_SESSION['profilePicture'] ?? '../../resources/images/pfp-default.svg';
-
-                echo "<a class='link-profile' href=''>
-                <img class='image-profile' src='{$profilePicture}' alt='pfp'>
-                </a>";
-
-            }
-
-            ?> 
-            </div>
+            <a class="logout-button" href="">X Sair</a>
         </header>
 
-        <main>
-            <div class="edit-account-form-container">
-                <form class="big-form" action="index.php" method="POST">
-                    <h1 class="form-title">Register</h1>
-                    <div class="error"><?php echo $error; ?></div>
-                    <label for="profilePicture"><img class="edit-account-form-profile-picture" src="<?php echo $user->getProfilePicture() ?? '../../resources/images/pfp-default.svg' ?>" alt="profile picture"></label>
-                    <input type="file" name="profilePicture" id="profilePicture" hidden>
-                    <label for="username">Username</label>
-                    <input type="text" name="username" id="username" required>
-                    <label for="email">E-mail</label>
-                    <input type="email" name="email" id="email" required>
-                    <button class="submit" name="button">Save Changes</button>
+        <main class="form-container">
+            <div class="container-create-bathroom">
+                <form class="create-bathroom-form" action="" method="POST" enctype="multipart/form-data">
+                    <img class="current-pfp" src="../../resources/images/placeholders/brazilian-bathroom.png" alt=""><br> <!-- A foto de perfil atual do usuário -->
+                    <label for="image">Upload New Profile Picture</label><br>
+                    <input type="file" id="image" name="image" accept="image/*"><br>
+                    <label for="name">Username</label>
+                    <input class="create-bathroom-input" type="text" name="name" id="name" value="">
+                    <label for="password">Password</label>
+                    <input class="create-bathroom-input" type="password" name="name" id="name" value="">
+                    <button class="submit">Apply Changes</button>
                 </form>
             </div>
         </main>
