@@ -34,7 +34,7 @@ $images = $bathroom->findBathroomImages($bathroom->getBathroomId());
 
         <header>
             <div class="logo-container"></div>
-                <a class='link-create-bathroom' href='../list-bathrooms'>< Go Back</a>";
+                <a class='link-create-bathroom' href='../list-bathrooms'>< Go Back</a>
             <div class="profile-container">
             <?php
             if(isset($_SESSION['userId'])){
