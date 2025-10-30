@@ -22,6 +22,7 @@ if(isset($_POST['button'])){
 
         try{
             $u->save();
+
             header("location: ../login/index.php");
         } catch(InvalidEmailException $e) {
             $error = 'Invalid email!';
