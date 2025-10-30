@@ -86,7 +86,7 @@ $images = $bathroom->findBathroomImages($bathroom->getBathroomId());
                         <p class="<?= $bathroom->getIsPaid() ? "paid-text" : "unpaid-text" ?>"><?= $bathroom->getIsPaid() ? "Paid" : "Free"?></p> <!-- Se for pago, classe unpaid-text e texto "Free" -->
                         <p class="price-text"><?= $bathroom->getIsPaid() ? "$" . $bathroom->getPrice() : "" ?></p> <!-- Se for pago, coloca o preço, se não, não coloca o p -->
                     </div>
-                    <a href="">
+                    <a target="_blank" href='<?= "https://www.google.com/maps?q=".$bathroom->getLat().",".$bathroom->getLon() ?>'>
                         <div class="maps-link">Go To Location (Maps)</div>
                     </a>
 
@@ -97,7 +97,7 @@ $images = $bathroom->findBathroomImages($bathroom->getBathroomId());
                                 <a href="../edit-bathroom/?bathroomId='.$bathroom->getBathroomId().'">
                                     <div class="edit-bathroom">Edit Toilet</div>
                                 </a>
-                                <a href="deleteBathroom.php?bathroomId='.$bathroom->getBathroomId().'">
+                                <a href="../../ajax/deleteBathroom.php?bathroomId='.$bathroom->getBathroomId().'">
                                     <div class="delete-bathroom">Delete Toilet</div>
                                 </a>
                             ';
