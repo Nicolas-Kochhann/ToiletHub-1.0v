@@ -91,7 +91,7 @@ $images = $bathroom->findBathroomImages($bathroom->getBathroomId());
                                 <a href="../edit-bathroom/?bathroomId='.$bathroom->getBathroomId().'">
                                     <div class="edit-bathroom">Edit Toilet</div>
                                 </a>
-                                <a href="../../ajax/deleteBathroom.php?bathroomId='.$bathroom->getBathroomId().'">
+                                <a href="../../commands/deleteBathroom.php?bathroomId='.$bathroom->getBathroomId().'">
                                     <div class="delete-bathroom">Delete Toilet</div>
                                 </a>
                             ';

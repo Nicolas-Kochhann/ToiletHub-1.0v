@@ -3,7 +3,7 @@
         'name' => 'nicolas.kochhann/project_shiba',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '9338f9061b0ec372ebfbdb88693ec28b1f81bb00',
+        'reference' => '711dc3d21923ca656434f18d5fe4ef3ba69b0013',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'nicolas.kochhann/project_shiba' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '9338f9061b0ec372ebfbdb88693ec28b1f81bb00',
+            'reference' => '711dc3d21923ca656434f18d5fe4ef3ba69b0013',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

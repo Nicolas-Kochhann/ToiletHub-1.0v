@@ -92,7 +92,7 @@ if(isset($_POST['submit'])){
             }
 
             ?>
-            <a class="logout-button" href="../../../ajax/logout.php">X Sair</a>
+            <a class="logout-button" href="../../../commands/logout.php">X Sair</a>
         </header>
 
         <main class="form-container">
